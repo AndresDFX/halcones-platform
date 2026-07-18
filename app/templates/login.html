@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ingresar · {{ APP_NAME }}</title>
+  <link rel="icon" type="image/png" href="/static/img/favicon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#7E0704">
+  <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-hero">
+    <img class="mark" src="/static/img/logo-shield.png" alt="Halcones Paracaidismo">
+    <div>
+      <div class="tag">Cali · Colombia</div>
+      <h1>Vive el cielo con<br>Halcones Paracaidismo</h1>
+      <p class="lead">Plataforma integral de gestión de cursos, seguimiento de estudiantes,
+         finanzas y programación de saltos. “Una vez hayas probado el vuelo, siempre
+         caminarás por la tierra con la vista mirando al cielo.”</p>
+    </div>
+    <img src="/static/img/wordmark-light.png" alt="" style="width:190px;opacity:.9">
+  </div>
+
+  <div class="login-form-side">
+    <div class="login-card">
+      <h2>Iniciar sesión</h2>
+      <p class="muted" style="margin-top:-4px">Ingresa con tu cuenta para continuar.</p>
+
+      {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+      <form method="post" action="/login">
+        <input type="hidden" name="next" value="{{ next }}">
+        <div class="field">
+          <label>Correo electrónico</label>
+          <input type="email" name="email" placeholder="tucorreo@halcones.co" required autofocus>
+        </div>
+        <div class="field">
+          <label>Contraseña</label>
+          <input type="password" name="password" placeholder="••••••••" required>
+        </div>
+        <button class="btn block" type="submit">Ingresar →</button>
+      </form>
+
+      <div class="demo-users">
+        <b>Cuentas de demostración</b> <span class="muted">(clic para autocompletar)</span>
+        <div class="u" onclick="fillLogin('admin@halcones.co','admin123')">
+          <span>👑 Administrador</span><span class="mono">admin@halcones.co</span></div>
+        <div class="u" onclick="fillLogin('instructor@halcones.co','instructor123')">
+          <span>🪂 Instructor</span><span class="mono">instructor@halcones.co</span></div>
+        <div class="u" onclick="fillLogin('julian@example.com','estudiante123')">
+          <span>🎓 Estudiante</span><span class="mono">julian@example.com</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

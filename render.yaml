@@ -1,0 +1,64 @@
+# Render Blueprint — Halcones Paracaidismo
+# Despliega la plataforma (FastAPI) + una base de datos PostgreSQL.
+#
+# Uso: en Render → "New +" → "Blueprint" → conecta el repo (raíz = halcones-platform).
+# Los secretos con sync:false se definen en el dashboard tras crear el servicio.
+#
+# ⚠️ El PostgreSQL gratuito de Render EXPIRA (~30 días). Para producción persistente,
+#    crea una base gratis en Neon (neon.tech) o Supabase y pega su cadena en
+#    DATABASE_URL (sync:false). Ver DEPLOY_RENDER.md.
+
+services:
+  - type: web
+    name: halcones-paracaidismo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL           # Postgres de Render (abajo) o Neon/Supabase
+        fromDatabase:
+          name: halcones-db
+          property: connectionString
+      - key: SECRET_KEY             # firma de sesiones
+        generateValue: true
+      - key: CRON_SECRET            # protege /notificaciones/cron
+        generateValue: true
+      - key: SEED_ON_STARTUP
+        value: "true"
+      - key: PUBLIC_BASE_URL        # ajústalo a tu URL de Render tras el 1er deploy
+        sync: false
+      # ---- Correo SMTP (opcional; también configurable desde el panel admin) ----
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+
+  # Cron: dispara las notificaciones activas una vez al día (08:00 UTC ≈ 03:00 Colombia).
+  # Usa la URL pública del servicio web + el token CRON_SECRET.
+  - type: cron
+    name: halcones-notificaciones
+    runtime: docker
+    plan: free
+    schedule: "0 8 * * *"
+    dockerfilePath: ./Dockerfile.cron
+    dockerContext: .
+    envVars:
+      - key: APP_URL               # p.ej. https://halcones-paracaidismo.onrender.com
+        sync: false
+      - key: CRON_SECRET           # el MISMO valor que el del servicio web
+        sync: false
+
+databases:
+  - name: halcones-db
+    plan: free
+    databaseName: halcones
+    user: halcones

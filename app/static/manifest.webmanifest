@@ -1,0 +1,19 @@
+{
+  "name": "Halcones Paracaidismo",
+  "short_name": "Halcones",
+  "description": "Plataforma de gestión de cursos, estudiantes, finanzas y saltos de Halcones Paracaidismo.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#7E0704",
+  "theme_color": "#7E0704",
+  "lang": "es-CO",
+  "orientation": "any",
+  "categories": ["business", "productivity", "sports"],
+  "icons": [
+    { "src": "/static/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/static/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/static/img/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/static/img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}{{ curso.nombre }} · {{ APP_NAME }}{% endblock %}
+{% block page_title %}{{ curso.nombre }}{% endblock %}
+{% block topbar_actions %}
+  {% if user.role.value in ['admin','instructor'] %}
+    <a href="/cursos/{{ curso.id }}/media/nuevo" class="btn outline sm">＋ Contenido</a>
+  {% endif %}
+  {% if user.role.value == 'admin' %}
+    <a href="/cursos/{{ curso.id }}/editar" class="btn sm">✎ Editar</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card" style="background:linear-gradient(135deg,{{ curso.color }},var(--red));color:#fff;border:none">
+  <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center">
+    <div style="flex:1;min-width:240px">
+      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold)">{{ curso.modalidad }} · {{ curso.codigo }}</div>
+      <h2 style="color:#fff;font-size:1.6rem;margin:6px 0">{{ curso.nombre }}</h2>
+      <p style="color:#f0d9d5;max-width:560px">{{ curso.resumen }}</p>
+      <div class="pill-list" style="margin-top:10px">
+        <span class="badge" style="background:rgba(255,255,255,.2);color:#fff">🪂 {{ curso.niveles_total }} niveles</span>
+        <span class="badge" style="background:rgba(255,255,255,.2);color:#fff">🎈 {{ '{:,}'.format(curso.altura_salto_ft).replace(',','.') }} ft</span>
+        {% if curso.duracion %}<span class="badge" style="background:rgba(255,255,255,.2);color:#fff">⏱ {{ curso.duracion }}</span>{% endif %}
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-family:var(--head);font-size:2.2rem">{{ curso.precio | cop }}</div>
+      <div class="small" style="color:#f0d9d5">Reserva desde {{ curso.reserva_minima | cop }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div>
+    {% if curso.descripcion %}
+    <div class="card">
+      <h3>Sobre el curso</h3>
+      {% for par in curso.descripcion.split('\n') %}{% if par.strip() %}<p>{{ par }}</p>{% endif %}{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="card-head"><h3>Temario · niveles</h3>
+        <div class="spacer"></div>
+        <span class="small muted">{{ curso.levels|length }} niveles</span>
+      </div>
+      {% for lvl in curso.levels %}
+      <div style="display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)">
+        <div class="avatar" style="border-radius:10px;background:#f3e0df;color:var(--maroon)">{{ lvl.numero }}</div>
+        <div>
+          <div style="font-weight:700">{{ lvl.titulo }}</div>
+          <div class="small muted">{{ lvl.descripcion }}</div>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted">Aún no se han definido los niveles.</p>
+      {% endfor %}
+      {% if user.role.value == 'admin' %}
+      <form method="post" action="/cursos/{{ curso.id }}/niveles" style="margin-top:14px;display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:end">
+        <div><label class="tiny">N°</label><input type="number" name="numero" value="{{ curso.levels|length + 1 }}" required></div>
+        <div><label class="tiny">Título del nivel</label><input type="text" name="titulo" placeholder="Nivel X · ..." required></div>
+        <button class="btn sm" type="submit">＋ Añadir</button>
+      </form>
+      {% endif %}
+    </div>
+
+    <!-- Videos -->
+    <div class="card">
+      <div class="card-head"><h3>🎬 Videos del curso</h3></div>
+      {% if videos %}
+      <div class="video-grid">
+        {% for v in videos %}
+        <div>
+          {% if v.youtube_embed %}
+            <div class="video-embed"><iframe src="{{ v.youtube_embed }}" allowfullscreen loading="lazy"></iframe></div>
+          {% elif v.archivo %}
+            <video controls style="width:100%;border-radius:9px;background:#000"><source src="/uploads/{{ v.archivo }}"></video>
+          {% else %}
+            <a href="{{ v.url }}" target="_blank" class="media-item"><div class="mi-ico">🔗</div><div>Abrir enlace del video</div></a>
+          {% endif %}
+          <div style="margin-top:8px;font-weight:600">{{ v.titulo }}</div>
+          <div class="small muted">{{ v.descripcion }}</div>
+          {% if user.role.value in ['admin','instructor'] %}
+          <form method="post" action="/cursos/{{ curso.id }}/media/{{ v.id }}/eliminar" data-confirm="¿Eliminar este video?" style="margin-top:4px">
+            <button class="btn ghost sm" style="color:var(--danger)">Eliminar</button></form>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}<p class="muted">No hay videos cargados todavía.</p>{% endif %}
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h3>✅ Incluye</h3>
+      <ul class="chk-list">
+        {% for item in curso.incluye_lista %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+    </div>
+
+    {% if curso.requisitos_lista %}
+    <div class="card">
+      <h3>📋 Requisitos</h3>
+      <ul class="chk-list">
+        {% for item in curso.requisitos_lista %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="card-head"><h3>📚 Manuales y documentos</h3></div>
+      {% if manuales %}
+        {% for m in manuales %}
+        <div class="media-item" style="margin-bottom:10px">
+          <div class="mi-ico">📄</div>
+          <div style="flex:1">
+            <div style="font-weight:600">{{ m.titulo }}</div>
+            <div class="small muted">{{ m.descripcion }}</div>
+          </div>
+          {% if m.archivo %}<a href="/uploads/{{ m.archivo }}" target="_blank" class="btn sm">Abrir</a>
+          {% elif m.url %}<a href="{{ m.url }}" target="_blank" class="btn sm">Abrir</a>{% endif %}
+        </div>
+        {% endfor %}
+      {% else %}<p class="muted">Sin documentos.</p>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

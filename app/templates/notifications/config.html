@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Configuración de correo · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Configuración de correo (SMTP){% endblock %}
+{% block topbar_actions %}<a href="/notificaciones" class="btn ghost sm">← Notificaciones</a>{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:720px">
+  {% if cfg.configured %}
+    <div class="alert info">✅ El correo está configurado. Las notificaciones se enviarán realmente.</div>
+  {% else %}
+    <div class="alert" style="background:var(--warn-bg);color:var(--warn);border:1px solid #ecd9a8">
+      ⚙️ El correo aún no está configurado (modo simulación). Completa estos datos para activar el envío.
+    </div>
+  {% endif %}
+
+  <form method="post" action="/notificaciones/config">
+    <div class="form-grid">
+      <div class="field"><label>Servidor SMTP (host)</label>
+        <input type="text" name="smtp_host" value="{{ cfg.smtp_host }}" placeholder="smtp.gmail.com / smtp.resend.com"></div>
+      <div class="field"><label>Puerto</label>
+        <input type="number" name="smtp_port" value="{{ cfg.smtp_port }}" placeholder="587"></div>
+      <div class="field"><label>Usuario</label>
+        <input type="text" name="smtp_user" value="{{ cfg.smtp_user }}" placeholder="usuario / API key"></div>
+      <div class="field"><label>Contraseña</label>
+        <input type="password" name="smtp_password" placeholder="{{ '•••••• (guardada)' if cfg.smtp_password else '' }}">
+        <div class="hint">Déjalo vacío para conservar la contraseña actual.</div></div>
+      <div class="field full"><label>Remitente (From)</label>
+        <input type="text" name="smtp_from" value="{{ cfg.smtp_from }}" placeholder="Halcones Paracaidismo <no-reply@tudominio.com>"></div>
+      <div class="field"><label class="check"><input type="checkbox" name="smtp_tls" value="true" {{ 'checked' if cfg.smtp_tls }}> Usar TLS (recomendado)</label></div>
+    </div>
+    <div class="btn-row">
+      <a href="/notificaciones" class="btn outline">Cancelar</a>
+      <button class="btn" type="submit">Guardar configuración</button>
+    </div>
+  </form>
+
+  <div class="divider"></div>
+  <p class="small muted mb0">💡 Proveedores recomendados con capa gratuita: <b>Brevo</b> (300 correos/día),
+    <b>Resend</b> (3.000/mes) o <b>Gmail</b> con contraseña de aplicación. Estos valores también
+    pueden definirse por variables de entorno (<code>SMTP_HOST</code>, etc.); lo guardado aquí tiene prioridad.</p>
+</div>
+{% endblock %}

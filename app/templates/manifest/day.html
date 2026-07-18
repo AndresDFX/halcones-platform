@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Jornada {{ jd.fecha | fecha }} · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Jornada · {{ jd.fecha | fecha_larga }}{% endblock %}
+{% block topbar_actions %}<a href="/manifiesto" class="btn ghost sm">← Jornadas</a>{% endblock %}
+
+{% set load_estados = {'programado':'info','abordando':'warn','en_vuelo':'warn','completado':'ok','cancelado':'danger'} %}
+
+{% block content %}
+<div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+  <div>
+    <div class="tiny muted">ZONA</div>
+    <div style="font-weight:600">📍 {{ jd.zona }}</div>
+  </div>
+  <div><div class="tiny muted">ESTADO</div><span class="badge info">{{ jd.estado }}</span></div>
+  <div><div class="tiny muted">CLIMA</div><div class="small">{{ jd.clima or '—' }}</div></div>
+  <div style="flex:1"></div>
+  <div style="text-align:right">
+    <div class="tiny muted">VUELOS / PERSONAS</div>
+    <div style="font-family:var(--head);font-size:1.3rem">{{ jd.loads|length }} / {{ jd.loads|sum(attribute='ocupados') }}</div>
+  </div>
+</div>
+{% if jd.notas %}<div class="alert info">📝 {{ jd.notas }}</div>{% endif %}
+
+<div class="grid cols-2" style="align-items:start">
+  {% for load in jd.loads %}
+  <div class="load-card">
+    <div class="load-head">
+      <div class="num">{{ load.numero }}</div>
+      <div style="flex:1">
+        <div style="font-weight:700">Vuelo {{ load.numero }} · {{ load.hora_estimada or 'sin hora' }}</div>
+        <div class="meta">{{ load.aircraft.matricula ~ ' · ' ~ load.aircraft.modelo if load.aircraft else 'sin avión' }} · {{ '{:,}'.format(load.altura_ft).replace(',','.') }} ft</div>
+      </div>
+      <span class="capacity-pill">{{ load.ocupados }}/{{ load.capacidad or '∞' }}</span>
+    </div>
+
+    {% for s in load.slots %}
+    <div class="slot">
+      <span class="s-role {{ s.rol.value }}">{{ s.rol.value }}</span>
+      <div style="flex:1">
+        <span style="font-weight:600">{{ s.display_nombre }}</span>
+        {% if s.tipo_salto %}<span class="tiny muted"> · {{ s.tipo_salto }}</span>{% endif %}
+      </div>
+      <form method="post" action="/manifiesto/slot/{{ s.id }}/eliminar" data-confirm="¿Quitar del vuelo?">
+        <button class="btn ghost sm" style="color:var(--danger);padding:2px 6px">✕</button></form>
+    </div>
+    {% else %}
+    <div class="slot"><span class="muted small">Sin personas asignadas todavía.</span></div>
+    {% endfor %}
+
+    <!-- Asignar persona -->
+    <details style="padding:10px 16px;border-top:1px solid var(--line)">
+      <summary style="cursor:pointer;font-weight:600;color:var(--maroon);font-size:.85rem">＋ Asignar persona</summary>
+      <form method="post" action="/manifiesto/load/{{ load.id }}/asignar" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="grid-column:1/-1"><label class="tiny">Persona</label>
+          <select name="person_id">
+            <option value="">— Externo (escribir nombre) —</option>
+            <optgroup label="Estudiantes">
+              {% for e in estudiantes %}<option value="{{ e.id }}">{{ e.nombre }}</option>{% endfor %}
+            </optgroup>
+            <optgroup label="Instructores">
+              {% for i in instructores %}<option value="{{ i.id }}">{{ i.nombre }}</option>{% endfor %}
+            </optgroup>
+          </select></div>
+        <div><label class="tiny">Nombre externo</label><input type="text" name="person_nombre" placeholder="(si es externo)"></div>
+        <div><label class="tiny">Rol</label>
+          <select name="rol">
+            <option value="alumno">Alumno</option>
+            <option value="instructor">Instructor</option>
+            <option value="tandem">Tándem</option>
+            <option value="camara">Cámara</option>
+            <option value="deportista">Deportista</option>
+          </select></div>
+        <div style="grid-column:1/-1"><label class="tiny">Tipo de salto</label><input type="text" name="tipo_salto" placeholder="AFF Nivel 2 / Tándem / Freefly"></div>
+        <div style="grid-column:1/-1"><button class="btn sm block" type="submit">Asignar al vuelo</button></div>
+      </form>
+    </details>
+
+    <!-- Estado + eliminar -->
+    <div style="display:flex;gap:8px;align-items:center;padding:10px 16px;border-top:1px solid var(--line);background:#faf6f0">
+      <form method="post" action="/manifiesto/load/{{ load.id }}/estado" style="display:flex;gap:6px;align-items:center">
+        <select name="estado" onchange="this.form.submit()" class="small" style="padding:5px 8px">
+          {% for st in ['programado','abordando','en_vuelo','completado','cancelado'] %}
+          <option value="{{ st }}" {{ 'selected' if load.estado.value==st }}>{{ st.replace('_',' ') }}</option>{% endfor %}
+        </select>
+      </form>
+      <div style="flex:1"></div>
+      <form method="post" action="/manifiesto/load/{{ load.id }}/eliminar" data-confirm="¿Eliminar el vuelo completo?">
+        <button class="btn ghost sm" style="color:var(--danger)">Eliminar vuelo</button></form>
+    </div>
+  </div>
+  {% else %}
+  <div class="card empty" style="grid-column:1/-1"><div class="big">✈️</div>No hay vuelos en esta jornada. Crea el primero.</div>
+  {% endfor %}
+
+  <!-- Nuevo vuelo -->
+  <div class="card">
+    <h3>➕ Nuevo vuelo (load)</h3>
+    <form method="post" action="/manifiesto/{{ jd.id }}/load/nuevo">
+      <div class="form-grid">
+        <div class="field"><label>Avión</label>
+          <select name="aircraft_id">
+            <option value="">— Sin asignar —</option>
+            {% for a in aviones %}<option value="{{ a.id }}">{{ a.matricula }} · {{ a.modelo }} (cap {{ a.capacidad }})</option>{% endfor %}
+          </select></div>
+        <div class="field"><label>Hora estimada</label><input type="text" name="hora_estimada" placeholder="09:00"></div>
+        <div class="field"><label>Altura (ft)</label><input type="number" name="altura_ft" value="10000"></div>
+      </div>
+      <button class="btn" type="submit">Crear vuelo</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

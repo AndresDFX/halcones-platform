@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Panel · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Panel del instructor{% endblock %}
+{% block topbar_actions %}
+  <a href="/manifiesto" class="btn outline sm">📋 Manifiesto</a>
+{% endblock %}
+
+{% block content %}
+<div class="stats">
+  <div class="stat">
+    <div class="label">Mis estudiantes</div>
+    <div class="value">{{ mis_estudiantes|length }}</div>
+    <div class="sub">inscripciones activas asignadas</div>
+  </div>
+  <div class="stat gold">
+    <div class="label">Mis próximos saltos</div>
+    <div class="value">{{ mis_slots|length }}</div>
+    <div class="sub">asignaciones programadas</div>
+  </div>
+  <div class="stat">
+    <div class="label">Jornadas próximas</div>
+    <div class="value">{{ proximas_jornadas|length }}</div>
+    <div class="sub">en el calendario</div>
+  </div>
+  <div class="stat ok">
+    <div class="label">Mi compensación</div>
+    <div class="value sm">{{ total_compensacion | cop }}</div>
+    <div class="sub">pagos recibidos</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Mis estudiantes</h3>
+        <div class="spacer"></div><a href="/estudiantes" class="btn ghost sm">Ver todos →</a></div>
+      {% if mis_estudiantes %}
+        {% for e in mis_estudiantes %}
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)">
+          <div class="avatar" style="width:34px;height:34px;font-size:.8rem;background:var(--maroon);color:#fff">{{ e.student.iniciales }}</div>
+          <div style="flex:1;min-width:0">
+            <a href="/estudiantes/{{ e.student.id }}" style="font-weight:600">{{ e.student.nombre }}</a>
+            <div class="tiny muted">{{ e.course.nombre }}</div>
+          </div>
+          <div style="width:120px">
+            <div class="tiny muted" style="display:flex;justify-content:space-between"><span>Nivel</span><span>{{ e.niveles_aprobados }}/{{ e.course.niveles_total }}</span></div>
+            <div class="progress"><span style="width:{{ e.porcentaje_avance }}%"></span></div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty"><div class="big">🎓</div>No tienes estudiantes asignados aún.</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Mis últimos pagos recibidos</h3>
+        <div class="spacer"></div><a href="/instructor/pagos" class="btn ghost sm">Ver mis pagos →</a></div>
+      {% if ultimos_pagos %}
+      <table class="tbl">
+        <thead><tr><th>Fecha</th><th>Concepto</th><th class="num">Monto</th></tr></thead>
+        <tbody>
+          {% for p in ultimos_pagos %}
+          <tr><td class="mono small">{{ p.fecha | fecha }}</td>
+            <td><span class="badge neutral">{{ p.concepto.value.replace('_',' ') }}</span></td>
+            <td class="num mono">{{ p.monto | cop }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="muted small">Aún no tienes pagos registrados.</p>{% endif %}
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Próximas jornadas</h3></div>
+      {% if proximas_jornadas %}
+        {% for jd in proximas_jornadas %}
+        <a href="/manifiesto/{{ jd.id }}" style="display:block;text-decoration:none;color:inherit">
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)">
+          <div class="avatar" style="background:var(--maroon);color:#fff;border-radius:10px">{{ jd.fecha.day }}</div>
+          <div style="flex:1">
+            <div style="font-weight:600">{{ jd.fecha | fecha_larga }}</div>
+            <div class="small muted">{{ jd.loads|length }} vuelo(s) · {{ jd.zona }}</div>
+          </div>
+        </div></a>
+        {% endfor %}
+      {% else %}<div class="empty small">Sin jornadas próximas.</div>{% endif %}
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Mis asignaciones de salto</h3></div>
+      {% if mis_slots %}
+        {% for s in mis_slots %}
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)">
+          <div class="avatar" style="width:30px;height:30px;font-size:.72rem;border-radius:8px;background:#f3e0df;color:var(--maroon)">{{ s.load.jump_day.fecha.day }}</div>
+          <div style="flex:1">
+            <div style="font-weight:600">{{ s.tipo_salto or 'Salto' }}</div>
+            <div class="tiny muted">{{ s.load.jump_day.fecha | fecha }} · {{ s.load.hora_estimada or '—' }} · Vuelo {{ s.load.numero }}</div>
+          </div>
+          <span class="badge info">{{ s.rol.value }}</span>
+        </div>
+        {% endfor %}
+      {% else %}<div class="empty small"><div class="big">🪂</div>Sin asignaciones próximas.</div>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

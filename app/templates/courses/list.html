@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Cursos · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Cursos{% endblock %}
+{% block topbar_actions %}
+  {% if user.role.value in ['admin','instructor'] %}
+    <a href="/cursos/nuevo" class="btn sm">＋ Nuevo curso</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<p class="muted" style="margin-top:-6px">Catálogo de formación de Halcones Paracaidismo.</p>
+<div class="grid cols-3">
+  {% for c in cursos %}
+  <div class="course-card">
+    <div class="cc-head" style="background:linear-gradient(135deg,{{ c.color }},var(--red))">
+      <div class="mod">{{ c.modalidad }}{% if c.destacado %} · ⭐ Destacado{% endif %}</div>
+      <h3>{{ c.nombre }}</h3>
+    </div>
+    <div class="cc-body">
+      <p class="small muted" style="flex:1">{{ c.resumen }}</p>
+      <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+        <span class="badge maroon">{{ c.niveles_total }} nivel(es)</span>
+        <span class="badge neutral">{{ '{:,}'.format(c.altura_salto_ft).replace(',','.') }} ft</span>
+        {% if not c.activo %}<span class="badge danger">inactivo</span>{% endif %}
+      </div>
+      <div class="price">{{ c.precio | cop }}</div>
+      <div class="tiny muted">Reserva desde {{ c.reserva_minima | cop }}</div>
+      <div class="btn-row" style="margin-top:14px">
+        <a href="/cursos/{{ c.id }}" class="btn sm block">Ver curso →</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty"><div class="big">🪂</div>No hay cursos aún.</div>
+  {% endfor %}
+</div>
+{% endblock %}

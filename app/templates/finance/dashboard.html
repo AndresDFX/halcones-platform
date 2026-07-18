@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Finanzas · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Finanzas · Ingresos y cartera{% endblock %}
+{% block topbar_actions %}
+  <a href="/finanzas/instructores" class="btn outline sm">🧾 Nómina</a>
+  <a href="/finanzas/pago/nuevo" class="btn sm">＋ Registrar pago</a>
+{% endblock %}
+
+{% block content %}
+<div class="stats">
+  <div class="stat ok">
+    <div class="label">Ingresos recibidos</div>
+    <div class="value sm">{{ ingresos | cop }}</div>
+    <div class="sub">total histórico</div>
+  </div>
+  <div class="stat">
+    <div class="label">Valor de cursos</div>
+    <div class="value sm">{{ valor_cursos | cop }}</div>
+    <div class="sub">precio acordado (inscripciones)</div>
+  </div>
+  <div class="stat red">
+    <div class="label">Cartera por cobrar</div>
+    <div class="value sm">{{ cartera | cop }}</div>
+    <div class="sub">saldos pendientes</div>
+  </div>
+  <div class="stat gold">
+    <div class="label">Nómina instructores</div>
+    <div class="value sm">{{ nomina | cop }}</div>
+    <div class="sub"><a href="/finanzas/instructores">ver egresos →</a></div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Movimientos recientes</h3>
+        <div class="spacer"></div><span class="small muted">{{ pagos|length }} pagos</span></div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Fecha</th><th>Estudiante</th><th>Curso</th><th>Concepto</th><th>Método</th><th class="num">Monto</th></tr></thead>
+          <tbody>
+          {% for p in pagos %}
+            <tr>
+              <td class="mono small">{{ p.fecha | fecha }}</td>
+              <td><a href="/estudiantes/{{ p.enrollment.student.id }}">{{ p.enrollment.student.nombre }}</a></td>
+              <td class="small">{{ p.enrollment.course.modalidad }}</td>
+              <td><span class="badge neutral">{{ p.concepto.value }}</span></td>
+              <td class="small">{{ p.metodo.value }}</td>
+              <td class="num mono" style="font-weight:600">{{ p.monto | cop }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="6"><div class="empty">Sin pagos registrados.</div></td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h3>Ingresos por método</h3>
+      {% set total_m = por_metodo.values()|sum %}
+      {% for metodo, val in por_metodo.items() %}
+      <div style="margin-bottom:10px">
+        <div class="small" style="display:flex;justify-content:space-between">
+          <span style="text-transform:capitalize">{{ metodo }}</span><span class="mono">{{ val | cop }}</span></div>
+        <div class="progress"><span style="width:{{ ((val/total_m*100)|round|int) if total_m else 0 }}%"></span></div>
+      </div>
+      {% else %}<p class="muted small">Sin datos.</p>{% endfor %}
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Cartera por estudiante</h3></div>
+      {% if deudores %}
+        {% for e in deudores %}
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)">
+          <div style="flex:1;min-width:0">
+            <a href="/estudiantes/{{ e.student.id }}" style="font-weight:600">{{ e.student.nombre }}</a>
+            <div class="tiny muted">{{ e.course.modalidad }} · pagado {{ e.porcentaje_pagado }}%</div>
+          </div>
+          <a href="/finanzas/pago/nuevo?enrollment_id={{ e.id }}" class="mono" style="color:var(--danger);font-weight:600">{{ e.saldo | cop }}</a>
+        </div>
+        {% endfor %}
+      {% else %}<div class="empty small">Todos al día 🎉</div>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: halcones-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: halcones
+      POSTGRES_PASSWORD: halcones
+      POSTGRES_DB: halcones
+    volumes:
+      - halcones_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U halcones"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  web:
+    build: .
+    container_name: halcones-web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://halcones:halcones@db:5432/halcones
+      SECRET_KEY: ${SECRET_KEY:-halcones-secret-key-2026-cambia-esto}
+      UPLOAD_DIR: /app/uploads
+      SEED_ON_STARTUP: "true"
+    ports:
+      - "8080:8000"
+    volumes:
+      - halcones_uploads:/app/uploads
+
+volumes:
+  halcones_db:
+  halcones_uploads:

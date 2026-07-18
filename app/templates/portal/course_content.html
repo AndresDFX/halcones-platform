@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ curso.nombre }} · {{ APP_NAME }}{% endblock %}
+{% block page_title %}{{ curso.nombre }}{% endblock %}
+{% block topbar_actions %}<a href="/" class="btn ghost sm">← Mi panel</a>{% endblock %}
+
+{% block content %}
+{% if enr %}
+<div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+  <div style="flex:1;min-width:200px">
+    <div class="small muted" style="display:flex;justify-content:space-between"><span>Tu avance</span><span>{{ enr.niveles_aprobados }}/{{ enr.course.niveles_total }} niveles</span></div>
+    <div class="progress" style="margin-top:6px"><span style="width:{{ enr.porcentaje_avance }}%"></span></div>
+  </div>
+  {% if enr.saldo > 0 %}<span class="badge danger">Saldo pendiente {{ enr.saldo | cop }}</span>
+  {% else %}<span class="badge ok">Pagos al día</span>{% endif %}
+</div>
+{% endif %}
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>🎬 Videos del curso</h3></div>
+      {% if videos %}
+      <div class="video-grid">
+        {% for v in videos %}
+        <div>
+          {% if v.youtube_embed %}
+            <div class="video-embed"><iframe src="{{ v.youtube_embed }}" allowfullscreen loading="lazy"></iframe></div>
+          {% elif v.archivo %}
+            <video controls style="width:100%;border-radius:9px;background:#000"><source src="/uploads/{{ v.archivo }}"></video>
+          {% else %}
+            <a href="{{ v.url }}" target="_blank" class="media-item"><div class="mi-ico">🔗</div><div>Abrir video</div></a>
+          {% endif %}
+          <div style="margin-top:8px;font-weight:600">{{ v.titulo }}</div>
+          <div class="small muted">{{ v.descripcion }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}<p class="muted">Aún no hay videos disponibles.</p>{% endif %}
+    </div>
+
+    <div class="card">
+      <h3>Temario del curso</h3>
+      {% for lvl in curso.levels %}
+      <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)">
+        <div class="avatar" style="width:28px;height:28px;font-size:.72rem;border-radius:8px;background:#f3e0df;color:var(--maroon)">{{ lvl.numero }}</div>
+        <div><div style="font-weight:600">{{ lvl.titulo }}</div>
+          <div class="small muted">{{ lvl.descripcion }}</div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>📚 Manual y documentos</h3></div>
+      {% if manuales %}
+        {% for m in manuales %}
+        <div class="media-item" style="margin-bottom:10px">
+          <div class="mi-ico">📄</div>
+          <div style="flex:1"><div style="font-weight:600">{{ m.titulo }}</div>
+            <div class="small muted">{{ m.descripcion }}</div></div>
+          {% if m.archivo %}<a href="/uploads/{{ m.archivo }}" target="_blank" class="btn sm">Leer</a>
+          {% elif m.url %}<a href="{{ m.url }}" target="_blank" class="btn sm">Abrir</a>{% endif %}
+        </div>
+        {% endfor %}
+      {% else %}<p class="muted small">Sin documentos.</p>{% endif %}
+    </div>
+    <div class="card">
+      <h3>✅ Tu curso incluye</h3>
+      <ul class="chk-list">{% for i in curso.incluye_lista %}<li>{{ i }}</li>{% endfor %}</ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

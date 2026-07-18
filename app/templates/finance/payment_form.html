@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Registrar pago · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Registrar pago{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:640px">
+<form method="post" action="/finanzas/pago/nuevo">
+  <div class="field">
+    <label>Inscripción <span class="req">*</span></label>
+    <select name="enrollment_id" required>
+      <option value="">— Selecciona estudiante / curso —</option>
+      {% for e in enrollments %}
+      <option value="{{ e.id }}" {{ 'selected' if seleccionada and seleccionada.id==e.id }}>
+        {{ e.student.nombre }} — {{ e.course.modalidad }} (saldo {{ e.saldo | cop }})
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-grid">
+    <div class="field"><label>Monto (COP) <span class="req">*</span></label>
+      <input type="text" class="money" name="monto" placeholder="2.000.000" required></div>
+    <div class="field"><label>Fecha</label><input type="date" name="fecha"></div>
+    <div class="field"><label>Concepto</label>
+      <select name="concepto">
+        <option value="reserva">Reserva</option>
+        <option value="abono" selected>Abono</option>
+        <option value="saldo">Saldo</option>
+        <option value="otro">Otro</option>
+      </select></div>
+    <div class="field"><label>Método</label>
+      <select name="metodo">
+        <option value="transferencia">Transferencia</option>
+        <option value="consignacion">Consignación</option>
+        <option value="efectivo">Efectivo</option>
+        <option value="link">Link de pago</option>
+      </select></div>
+    <div class="field full"><label>Referencia</label><input type="text" name="referencia" placeholder="N° de transacción / banco"></div>
+    <div class="field full"><label>Nota</label><input type="text" name="nota"></div>
+  </div>
+  <div class="btn-row">
+    <a href="/finanzas" class="btn outline">Cancelar</a>
+    <button class="btn" type="submit">Registrar pago</button>
+  </div>
+</form>
+</div>
+{% endblock %}

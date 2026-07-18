@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if regla else 'Nueva' }} regla · {{ APP_NAME }}{% endblock %}
+{% block page_title %}{{ 'Editar regla de notificación' if regla else 'Nueva regla de notificación' }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:820px">
+<form method="post" action="{{ ('/notificaciones/' ~ regla.id ~ '/editar') if regla else '/notificaciones/nueva' }}">
+  <div class="form-grid">
+    <div class="field"><label>Tipo <span class="req">*</span></label>
+      <select name="tipo" id="tipo-select" onchange="syncTipo()">
+        <option value="recordatorio_salto" {{ 'selected' if tipo_sel=='recordatorio_salto' }}>Recordatorio de próximo salto</option>
+        <option value="oferta_curso" {{ 'selected' if tipo_sel=='oferta_curso' }}>Oferta de curso (saltó una vez)</option>
+      </select></div>
+    <div class="field"><label>Nombre de la regla <span class="req">*</span></label>
+      <input type="text" name="nombre" id="f-nombre" value="{{ regla.nombre if regla }}" required></div>
+
+    <div class="field" id="grp-antelacion">
+      <label>Días de antelación</label>
+      <input type="number" name="dias_antelacion" id="f-antelacion" value="{{ regla.dias_antelacion if regla else 2 }}">
+      <div class="hint">Enviar el recordatorio N días antes del salto.</div></div>
+    <div class="field" id="grp-intervalo">
+      <label>Intervalo (días)</label>
+      <input type="number" name="intervalo_dias" id="f-intervalo" value="{{ regla.intervalo_dias if regla else 30 }}">
+      <div class="hint">Ofrecer a quienes su último salto fue hace ≥ X días.</div></div>
+
+    <div class="field"><label>Frecuencia de evaluación</label>
+      <select name="frecuencia">
+        {% for f in ['diaria','semanal','manual'] %}
+        <option value="{{ f }}" {{ 'selected' if regla and regla.frecuencia==f }}>{{ f }}</option>{% endfor %}
+      </select>
+      <div class="hint">Cada cuánto el sistema evalúa esta regla (vía cron).</div></div>
+    <div class="field" style="display:flex;align-items:flex-end">
+      <label class="check"><input type="checkbox" name="activo" value="true" {{ 'checked' if not regla or regla.activo }}> Regla activa</label>
+    </div>
+
+    <div class="field full"><label>Asunto del correo <span class="req">*</span></label>
+      <input type="text" name="asunto" id="f-asunto" value="{{ regla.asunto if regla }}" required></div>
+    <div class="field full"><label>Cuerpo del correo <span class="req">*</span></label>
+      <textarea name="cuerpo" id="f-cuerpo" rows="10" required>{{ regla.cuerpo if regla }}</textarea></div>
+  </div>
+
+  <div class="alert info" style="font-size:.82rem">
+    <b>Variables disponibles</b> (se reemplazan por cada destinatario):
+    <span id="vars-recordatorio"><code>{nombre}</code> <code>{nombre_completo}</code> <code>{fecha_salto}</code> <code>{hora_salto}</code> <code>{vuelo}</code> <code>{tipo_salto}</code> <code>{zona}</code></span>
+    <span id="vars-oferta"><code>{nombre}</code> <code>{nombre_completo}</code> <code>{curso}</code> <code>{precio}</code> <code>{reserva}</code> <code>{dias_desde}</code></span>
+  </div>
+
+  <div class="btn-row">
+    <a href="/notificaciones" class="btn outline">Cancelar</a>
+    <button class="btn" type="submit">{{ 'Guardar cambios' if regla else 'Crear regla' }}</button>
+  </div>
+</form>
+</div>
+
+<script>
+var DEF = {{ defaults | tojson }};
+var isEdit = {{ 'true' if regla else 'false' }};
+function syncTipo() {
+  var t = document.getElementById('tipo-select').value;
+  var esRec = (t === 'recordatorio_salto');
+  document.getElementById('grp-antelacion').style.display = esRec ? 'block' : 'none';
+  document.getElementById('grp-intervalo').style.display = esRec ? 'none' : 'block';
+  document.getElementById('vars-recordatorio').style.display = esRec ? 'inline' : 'none';
+  document.getElementById('vars-oferta').style.display = esRec ? 'none' : 'inline';
+  // Prefill de plantillas solo al crear (no pisar lo que edita el admin)
+  if (!isEdit && DEF[t]) {
+    document.getElementById('f-nombre').value = DEF[t].nombre;
+    document.getElementById('f-asunto').value = DEF[t].asunto;
+    document.getElementById('f-cuerpo').value = DEF[t].cuerpo;
+    document.getElementById('f-antelacion').value = DEF[t].dias_antelacion;
+    document.getElementById('f-intervalo').value = DEF[t].intervalo_dias;
+  }
+}
+syncTipo();
+</script>
+{% endblock %}

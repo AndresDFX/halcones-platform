@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if u else 'Nuevo' }} usuario · {{ APP_NAME }}{% endblock %}
+{% block page_title %}{{ 'Editar usuario' if u else 'Nuevo usuario' }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:860px">
+<form method="post" action="{{ ('/usuarios/' ~ u.id ~ '/editar') if u else '/usuarios/nuevo' }}">
+  <div class="form-grid">
+    <div class="field"><label>Rol <span class="req">*</span></label>
+      <select name="role" id="role-select" onchange="syncRole()">
+        <option value="estudiante" {{ 'selected' if rol_sel=='estudiante' }}>Estudiante</option>
+        <option value="instructor" {{ 'selected' if rol_sel=='instructor' }}>Instructor</option>
+        <option value="admin" {{ 'selected' if rol_sel=='admin' }}>Administrador</option>
+      </select></div>
+    <div class="field"><label>Nombre completo <span class="req">*</span></label>
+      <input type="text" name="nombre" value="{{ u.nombre if u }}" required></div>
+    <div class="field"><label>Correo electrónico <span class="req">*</span></label>
+      <input type="email" name="email" value="{{ u.email if u }}" required></div>
+    <div class="field"><label>Teléfono</label><input type="text" name="telefono" value="{{ u.telefono or '' if u }}"></div>
+    <div class="field"><label>Cédula</label><input type="text" name="cedula" value="{{ u.cedula or '' if u }}"></div>
+    {% if not u %}
+    <div class="field"><label>Contraseña inicial</label>
+      <input type="text" name="password" value="halcones123">
+      <div class="hint">Entrega esta contraseña al usuario. Podrá cambiarla luego el admin.</div></div>
+    {% endif %}
+  </div>
+
+  <!-- Campos de estudiante -->
+  <div id="grp-estudiante">
+    <div class="divider"></div>
+    <h4>Datos del estudiante</h4>
+    <div class="form-grid">
+      <div class="field"><label>Peso (kg)</label><input type="number" step="0.1" name="peso_kg" value="{{ u.peso_kg or '' if u }}"></div>
+      <div class="field"><label>Fecha de nacimiento</label><input type="date" name="fecha_nacimiento" value="{{ u.fecha_nacimiento or '' if u }}"></div>
+      <div class="field"><label>EPS</label><input type="text" name="eps" value="{{ u.eps or '' if u }}"></div>
+      <div class="field"><label>Dirección</label><input type="text" name="direccion" value="{{ u.direccion or '' if u }}"></div>
+      <div class="field"><label>Contacto de emergencia</label><input type="text" name="contacto_emergencia_nombre" value="{{ u.contacto_emergencia_nombre or '' if u }}"></div>
+      <div class="field"><label>Tel. de emergencia</label><input type="text" name="contacto_emergencia_telefono" value="{{ u.contacto_emergencia_telefono or '' if u }}"></div>
+    </div>
+  </div>
+
+  <!-- Campos de instructor -->
+  <div id="grp-instructor">
+    <div class="divider"></div>
+    <h4>Datos del instructor</h4>
+    <div class="form-grid">
+      <div class="field"><label>Licencia</label><input type="text" name="licencia" value="{{ u.licencia or '' if u }}" placeholder="Instructor AFF certificado"></div>
+      <div class="field"><label>Especialidad</label><input type="text" name="especialidad" value="{{ u.especialidad or '' if u }}" placeholder="AFF · Tándem · Cámara"></div>
+    </div>
+  </div>
+
+  {% if u %}
+  <div class="divider"></div>
+  <label class="check"><input type="checkbox" name="activo" value="true" {{ 'checked' if u.activo }}> Cuenta activa</label>
+  {% endif %}
+
+  <div class="btn-row mt20">
+    <a href="/usuarios" class="btn outline">Cancelar</a>
+    <button class="btn" type="submit">{{ 'Guardar cambios' if u else 'Crear usuario' }}</button>
+  </div>
+</form>
+
+{% if u %}
+<div class="divider"></div>
+<h4>🔑 Restablecer contraseña</h4>
+<form method="post" action="/usuarios/{{ u.id }}/password" style="display:flex;gap:10px;max-width:460px" data-confirm="¿Restablecer la contraseña de este usuario?">
+  <input type="text" name="password" placeholder="Nueva contraseña" required>
+  <button class="btn outline" type="submit">Restablecer</button>
+</form>
+{% endif %}
+</div>
+
+<script>
+function syncRole() {
+  var r = document.getElementById('role-select').value;
+  document.getElementById('grp-estudiante').style.display = (r === 'estudiante') ? 'block' : 'none';
+  document.getElementById('grp-instructor').style.display = (r === 'instructor') ? 'block' : 'none';
+}
+syncRole();
+</script>
+{% endblock %}

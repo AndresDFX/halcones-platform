@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Notificaciones · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Notificaciones por correo{% endblock %}
+{% block topbar_actions %}
+  <a href="/notificaciones/config" class="btn outline sm">⚙️ Configurar correo</a>
+  <form method="post" action="/notificaciones/ejecutar-todas" style="display:inline">
+    <button class="btn outline sm" type="submit">▶ Ejecutar activas</button></form>
+  <a href="/notificaciones/nueva" class="btn sm">＋ Nueva regla</a>
+{% endblock %}
+
+{% set est_badge = {'enviado':'ok','simulado':'info','pendiente':'neutral','error':'danger'} %}
+
+{% block content %}
+{% if smtp_ok %}
+  <div class="alert info">✅ SMTP configurado: las notificaciones se envían por correo.</div>
+{% else %}
+  <div class="alert" style="background:var(--warn-bg);color:var(--warn);border:1px solid #ecd9a8">
+    ⚙️ <b>Modo simulación</b>: el envío de correo aún no está configurado (faltan variables
+    <code>SMTP_*</code>). Las notificaciones se generan y quedan registradas como
+    <b>simuladas</b> — la funcionalidad queda lista para activarse al configurar el SMTP.
+  </div>
+{% endif %}
+
+<div class="stats">
+  <div class="stat ok"><div class="label">Enviadas</div><div class="value">{{ conteos.enviado }}</div></div>
+  <div class="stat"><div class="label">Simuladas</div><div class="value">{{ conteos.simulado }}</div></div>
+  <div class="stat gold"><div class="label">Pendientes</div><div class="value">{{ conteos.pendiente }}</div></div>
+  <div class="stat red"><div class="label">Con error</div><div class="value">{{ conteos.error }}</div></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>Reglas programadas</h3></div>
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Regla</th><th>Tipo</th><th>Programación</th><th>Estado</th><th>Última ejecución</th><th>Acciones</th></tr></thead>
+      <tbody>
+      {% for r in reglas %}
+        <tr>
+          <td style="font-weight:600">{{ r.nombre }}</td>
+          <td><span class="badge {{ 'info' if r.tipo.value=='recordatorio_salto' else 'maroon' }}">{{ r.tipo_label }}</span></td>
+          <td class="small muted">
+            {% if r.tipo.value == 'recordatorio_salto' %}{{ r.dias_antelacion }} días antes del salto
+            {% else %}a los {{ r.intervalo_dias }} días del último salto{% endif %}
+            · {{ r.frecuencia }}
+          </td>
+          <td>{% if r.activo %}<span class="badge ok">activa</span>{% else %}<span class="badge neutral">inactiva</span>{% endif %}</td>
+          <td class="small mono">{{ r.ultima_ejecucion | fecha if r.ultima_ejecucion else '—' }}</td>
+          <td>
+            <div style="display:flex;gap:5px;flex-wrap:wrap">
+              <a href="/notificaciones/{{ r.id }}/previsualizar" class="btn ghost sm" title="Previsualizar">👁</a>
+              <form method="post" action="/notificaciones/{{ r.id }}/ejecutar" style="display:inline"><button class="btn outline sm" title="Ejecutar ahora">▶</button></form>
+              <a href="/notificaciones/{{ r.id }}/editar" class="btn outline sm">Editar</a>
+              <form method="post" action="/notificaciones/{{ r.id }}/activar" style="display:inline"><button class="btn ghost sm">{{ '⏸' if r.activo else '✅' }}</button></form>
+              <form method="post" action="/notificaciones/{{ r.id }}/eliminar" data-confirm="¿Eliminar esta regla?" style="display:inline"><button class="btn ghost sm" style="color:var(--danger)">✕</button></form>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6"><div class="empty"><div class="big">✉️</div>No hay reglas. Crea la primera.</div></td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>Bitácora de notificaciones</h3>
+    <div class="spacer"></div><span class="small muted">últimas {{ logs|length }}</span></div>
+  {% if logs %}
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Fecha</th><th>Destinatario</th><th>Asunto</th><th>Tipo</th><th>Estado</th></tr></thead>
+      <tbody>
+      {% for l in logs %}
+        <tr>
+          <td class="mono small">{{ l.fecha_generado | fecha }}</td>
+          <td class="small">{{ l.email }}</td>
+          <td class="small">{{ l.asunto }}</td>
+          <td><span class="badge neutral">{{ 'salto' if l.tipo.value=='recordatorio_salto' else 'oferta' }}</span></td>
+          <td><span class="badge {{ est_badge[l.estado.value] }}">{{ l.estado.value }}</span>
+            {% if l.error %}<span class="tiny muted" title="{{ l.error }}"> ⚠</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<div class="empty small">Aún no se han generado notificaciones.</div>{% endif %}
+</div>
+{% endblock %}

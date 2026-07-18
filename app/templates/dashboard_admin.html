@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Panel · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Panel de control{% endblock %}
+{% block topbar_actions %}
+  <a href="/manifiesto" class="btn outline sm">📋 Manifiesto</a>
+  <a href="/finanzas/pago/nuevo" class="btn sm">＋ Registrar pago</a>
+{% endblock %}
+
+{% block content %}
+<div class="stats">
+  <div class="stat">
+    <div class="label">Estudiantes activos</div>
+    <div class="value">{{ total_estudiantes }}</div>
+    <div class="sub">{{ inscripciones_activas }} inscripciones en curso</div>
+  </div>
+  <div class="stat ok">
+    <div class="label">Ingresos recibidos</div>
+    <div class="value sm">{{ ingresos | cop }}</div>
+    <div class="sub">Total histórico de pagos</div>
+  </div>
+  <div class="stat red">
+    <div class="label">Cartera por cobrar</div>
+    <div class="value sm">{{ cartera | cop }}</div>
+    <div class="sub">Saldos pendientes</div>
+  </div>
+  <div class="stat gold">
+    <div class="label">Cursos activos</div>
+    <div class="value">{{ total_cursos }}</div>
+    <div class="sub">Catálogo publicado</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="card-head">
+        <h3>Ingresos por mes</h3>
+        <div class="spacer"></div>
+        <span class="small muted">últimos {{ serie|length }} meses</span>
+      </div>
+      {% if serie %}
+        {% set maxv = serie | map(attribute=1) | max %}
+        <div style="display:flex;align-items:flex-end;gap:14px;height:170px;padding-top:10px">
+          {% for mes, val in serie %}
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end">
+            <div class="small mono muted">{{ (val/1000000)|round(1) }}M</div>
+            <div style="width:100%;max-width:56px;background:linear-gradient(180deg,var(--red),var(--maroon));border-radius:8px 8px 0 0;height:{{ ((val/maxv)*130)|round|int if maxv else 2 }}px;min-height:4px"></div>
+            <div class="tiny muted">{{ mes }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty"><div class="big">📈</div>Aún no hay pagos registrados.</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Últimos pagos</h3>
+        <div class="spacer"></div>
+        <a href="/finanzas" class="btn ghost sm">Ver finanzas →</a>
+      </div>
+      {% if ultimos_pagos %}
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Fecha</th><th>Estudiante</th><th>Concepto</th><th>Método</th><th class="num">Monto</th></tr></thead>
+          <tbody>
+          {% for p in ultimos_pagos %}
+            <tr>
+              <td class="mono small">{{ p.fecha | fecha }}</td>
+              <td>{{ p.enrollment.student.nombre }}</td>
+              <td><span class="badge neutral">{{ p.concepto.value }}</span></td>
+              <td class="small">{{ p.metodo.value }}</td>
+              <td class="num mono">{{ p.monto | cop }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}<div class="empty">Sin pagos todavía.</div>{% endif %}
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Próximas jornadas</h3></div>
+      {% if proximas_jornadas %}
+        {% for jd in proximas_jornadas %}
+          <a href="/manifiesto/{{ jd.id }}" style="display:block;text-decoration:none;color:inherit">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)">
+            <div class="avatar" style="background:var(--maroon);color:#fff;border-radius:10px">{{ jd.fecha.day }}</div>
+            <div style="flex:1">
+              <div style="font-weight:600">{{ jd.fecha | fecha_larga }}</div>
+              <div class="small muted">{{ jd.loads|length }} vuelo(s) · {{ jd.zona }}</div>
+            </div>
+            <span class="badge {{ 'info' if jd.estado=='programada' else 'neutral' }}">{{ jd.estado }}</span>
+          </div></a>
+        {% endfor %}
+      {% else %}
+        <div class="empty"><div class="big">🗓️</div>No hay jornadas próximas.</div>
+      {% endif %}
+      <form method="post" action="/manifiesto/jornada/nueva" style="margin-top:14px;display:flex;gap:8px">
+        <input type="date" name="fecha" required>
+        <button class="btn sm" type="submit">＋ Jornada</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Foco de cobranza</h3></div>
+      {% if por_cobrar %}
+        {% for e in por_cobrar %}
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)">
+          <div style="flex:1;min-width:0">
+            <a href="/estudiantes/{{ e.student.id }}" style="font-weight:600">{{ e.student.nombre }}</a>
+            <div class="tiny muted">{{ e.course.nombre }}</div>
+          </div>
+          <div class="mono" style="color:var(--danger);font-weight:600">{{ e.saldo | cop }}</div>
+        </div>
+        {% endfor %}
+      {% else %}<div class="empty small">Sin saldos pendientes 🎉</div>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

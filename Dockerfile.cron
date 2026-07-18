@@ -1,0 +1,5 @@
+# Cron mínimo para Render: dispara las notificaciones activas llamando al endpoint
+# protegido por token del servicio web. Se ejecuta según el schedule de render.yaml.
+FROM alpine:3.20
+RUN apk add --no-cache curl
+CMD sh -c 'curl -fsS "$APP_URL/notificaciones/cron?token=$CRON_SECRET" && echo " notificaciones ejecutadas"'

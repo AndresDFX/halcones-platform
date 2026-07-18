@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Mis saltos · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Mis saltos{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-head"><h3>Programación y bitácora de saltos</h3></div>
+  {% if slots %}
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Fecha</th><th>Vuelo</th><th>Salto</th><th>Avión</th><th>Estado</th></tr></thead>
+      <tbody>
+      {% for s in slots %}
+        <tr>
+          <td>
+            <div style="font-weight:600">{{ s.load.jump_day.fecha | fecha }}</div>
+            <div class="tiny muted">{{ s.load.hora_estimada or '' }}
+              {% if s.load.jump_day.fecha >= hoy %}<span class="badge info">próximo</span>{% endif %}</div>
+          </td>
+          <td class="small">Vuelo {{ s.load.numero }}</td>
+          <td><span style="font-weight:600">{{ s.tipo_salto or 'Salto' }}</span></td>
+          <td class="small">{{ s.load.aircraft.matricula if s.load.aircraft else '—' }}</td>
+          <td>
+            {% set st = s.load.estado.value %}
+            <span class="badge {{ 'ok' if st=='completado' else ('info' if st=='programado' else ('danger' if st=='cancelado' else 'warn')) }}">{{ st.replace('_',' ') }}</span>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty"><div class="big">🪂</div>Todavía no tienes saltos programados.
+    <div class="small mt20">Tu instructor los agendará en el manifiesto.</div></div>
+  {% endif %}
+</div>
+{% endblock %}

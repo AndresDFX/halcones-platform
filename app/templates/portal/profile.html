@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Mi perfil · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Mi perfil{% endblock %}
+
+{% block content %}
+<div class="card" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+  <div class="avatar" style="width:64px;height:64px;font-size:1.5rem;background:var(--maroon);color:#fff">{{ user.iniciales }}</div>
+  <div>
+    <h2 style="margin:0">{{ user.nombre }}</h2>
+    <div class="muted small">{{ user.email }} · {{ user.role_label }}</div>
+  </div>
+</div>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h3>Datos personales</h3>
+    <dl class="kv">
+      <dt>Cédula</dt><dd>{{ user.cedula or '—' }}</dd>
+      <dt>Teléfono</dt><dd>{{ user.telefono or '—' }}</dd>
+      <dt>Peso</dt><dd>{{ (user.peso_kg|string + ' kg') if user.peso_kg else '—' }}</dd>
+      <dt>EPS</dt><dd>{{ user.eps or '—' }}</dd>
+      <dt>Dirección</dt><dd>{{ user.direccion or '—' }}</dd>
+    </dl>
+  </div>
+  <div class="card">
+    <h3>🚨 Contacto de emergencia</h3>
+    <dl class="kv">
+      <dt>Nombre</dt><dd>{{ user.contacto_emergencia_nombre or '—' }}</dd>
+      <dt>Teléfono</dt><dd>{{ user.contacto_emergencia_telefono or '—' }}</dd>
+    </dl>
+    <div class="divider"></div>
+    <p class="small muted">Si algún dato es incorrecto, comunícate con tu instructor o con la
+      administración de Halcones para actualizarlo.</p>
+  </div>
+</div>
+{% endblock %}

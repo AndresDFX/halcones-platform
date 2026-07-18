@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}{{ est.nombre }} · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Ficha del estudiante{% endblock %}
+{% block topbar_actions %}
+  {% if user.role.value == 'admin' %}
+  <a href="/finanzas/pago/nuevo?enrollment_id={{ est.enrollments[0].id if est.enrollments }}" class="btn outline sm">💳 Registrar pago</a>
+  <a href="/usuarios/{{ est.id }}/editar" class="btn sm">✎ Editar cuenta</a>
+  {% endif %}
+{% endblock %}
+
+{% set estados = {'pendiente':'neutral','en_progreso':'info','aprobado':'ok','repetir':'warn'} %}
+
+{% block content %}
+<div class="card" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+  <div class="avatar" style="width:64px;height:64px;font-size:1.5rem;background:var(--maroon);color:#fff">{{ est.iniciales }}</div>
+  <div style="flex:1;min-width:220px">
+    <h2 style="margin:0">{{ est.nombre }}</h2>
+    <div class="muted small">{{ est.email }} · {{ est.telefono or 'sin teléfono' }}
+      {% if not est.activo %}<span class="badge danger">inactivo</span>{% endif %}</div>
+  </div>
+  {% if user.role.value == 'admin' %}
+  {% set saldo = est.enrollments|sum(attribute='saldo') if est.enrollments else 0 %}
+  <div style="text-align:right">
+    <div class="tiny muted">SALDO PENDIENTE</div>
+    <div style="font-family:var(--head);font-size:1.6rem;color:{{ 'var(--danger)' if saldo > 0 else 'var(--ok)' }}">{{ saldo | cop }}</div>
+  </div>
+  <button class="btn outline sm" onclick="toggle('edit-form')">✎ Editar datos</button>
+  {% else %}
+  <span class="badge info">Vista de instructor</span>
+  {% endif %}
+</div>
+
+<!-- Formulario de edición (oculto · solo admin) -->
+{% if user.role.value == 'admin' %}
+<div class="card" id="edit-form" style="display:none;max-width:820px">
+  <h3>Editar datos personales</h3>
+  <form method="post" action="/estudiantes/{{ est.id }}/editar">
+    <div class="form-grid">
+      <div class="field full"><label>Nombre</label><input type="text" name="nombre" value="{{ est.nombre }}" required></div>
+      <div class="field"><label>Teléfono</label><input type="text" name="telefono" value="{{ est.telefono or '' }}"></div>
+      <div class="field"><label>Cédula</label><input type="text" name="cedula" value="{{ est.cedula or '' }}"></div>
+      <div class="field"><label>Peso (kg)</label><input type="number" step="0.1" name="peso_kg" value="{{ est.peso_kg or '' }}"></div>
+      <div class="field"><label>Fecha nacimiento</label><input type="date" name="fecha_nacimiento" value="{{ est.fecha_nacimiento or '' }}"></div>
+      <div class="field"><label>EPS</label><input type="text" name="eps" value="{{ est.eps or '' }}"></div>
+      <div class="field full"><label>Dirección</label><input type="text" name="direccion" value="{{ est.direccion or '' }}"></div>
+      <div class="field"><label>Contacto emergencia</label><input type="text" name="contacto_emergencia_nombre" value="{{ est.contacto_emergencia_nombre or '' }}"></div>
+      <div class="field"><label>Tel. emergencia</label><input type="text" name="contacto_emergencia_telefono" value="{{ est.contacto_emergencia_telefono or '' }}"></div>
+    </div>
+    <label class="check"><input type="checkbox" name="activo" value="true" {{ 'checked' if est.activo }}> Cuenta activa</label>
+    <div class="btn-row mt20"><button class="btn" type="submit">Guardar</button></div>
+  </form>
+</div>
+{% endif %}
+
+<div class="grid-2">
+  <div>
+    <!-- Inscripciones + bitácora -->
+    {% for enr in est.enrollments %}
+    <div class="card">
+      <div class="card-head">
+        <h3 style="margin:0">{{ enr.course.nombre }}</h3>
+        <div class="spacer"></div>
+        <span class="badge {{ 'ok' if enr.estado.value=='completado' else 'info' }}">{{ enr.estado.value }}</span>
+      </div>
+      <div class="small muted">Instructor: {{ enr.instructor.nombre if enr.instructor else '—' }} · Inscrito {{ enr.fecha_inscripcion | fecha }}</div>
+
+      <div class="grid cols-2" style="margin:14px 0">
+        <div>
+          <div class="small muted" style="display:flex;justify-content:space-between"><span>Avance</span><span>{{ enr.niveles_aprobados }}/{{ enr.course.niveles_total }}</span></div>
+          <div class="progress"><span style="width:{{ enr.porcentaje_avance }}%"></span></div>
+        </div>
+        {% if user.role.value == 'admin' %}
+        <div>
+          <div class="small muted" style="display:flex;justify-content:space-between"><span>Pagado</span><span>{{ enr.porcentaje_pagado }}%</span></div>
+          <div class="progress gold"><span style="width:{{ enr.porcentaje_pagado }}%"></span></div>
+        </div>
+        {% endif %}
+      </div>
+
+      <h4 style="margin:6px 0">🪂 Bitácora de saltos</h4>
+      {% for p in enr.progresos %}
+      <details style="border-bottom:1px solid var(--line)">
+        <summary style="display:flex;align-items:center;gap:10px;padding:9px 0;cursor:pointer;list-style:none">
+          <div class="avatar" style="width:28px;height:28px;font-size:.72rem;border-radius:8px;background:#f3e0df;color:var(--maroon)">{{ p.level.numero }}</div>
+          <div style="flex:1"><span style="font-weight:600">{{ p.level.titulo }}</span>
+            {% if p.fecha %}<span class="tiny muted"> · {{ p.fecha | fecha }}</span>{% endif %}</div>
+          <span class="badge {{ estados[p.estado.value] }}">{{ p.estado.value.replace('_',' ') }}</span>
+        </summary>
+        <div style="padding:4px 0 14px 38px">
+          {% if p.nota %}<p class="small">{{ p.nota }}</p>{% endif %}
+          <form method="post" action="/estudiantes/progreso/{{ p.id }}" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div><label class="tiny">Estado</label>
+              <select name="estado">
+                {% for st in ['pendiente','en_progreso','aprobado','repetir'] %}
+                <option value="{{ st }}" {{ 'selected' if p.estado.value==st }}>{{ st.replace('_',' ') }}</option>{% endfor %}
+              </select></div>
+            <div><label class="tiny">Fecha</label><input type="date" name="fecha" value="{{ p.fecha or '' }}"></div>
+            <div><label class="tiny">Altura (ft)</label><input type="number" name="altura_ft" value="{{ p.altura_ft or '' }}"></div>
+            <div><label class="tiny">Video (URL)</label><input type="url" name="video_url" value="{{ p.video_url or '' }}"></div>
+            <div style="grid-column:1/-1"><label class="tiny">Nota del instructor</label><textarea name="nota" rows="2">{{ p.nota or '' }}</textarea></div>
+            <div style="grid-column:1/-1"><button class="btn sm" type="submit">Guardar avance</button></div>
+          </form>
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card empty"><div class="big">🎓</div>Este estudiante aún no tiene inscripciones.</div>
+    {% endfor %}
+
+    <!-- Inscribir en curso (solo admin: define precio) -->
+    {% if user.role.value == 'admin' %}
+    <div class="card">
+      <h3>➕ Inscribir en un curso</h3>
+      <form method="post" action="/estudiantes/{{ est.id }}/inscribir">
+        <div class="form-grid">
+          <div class="field"><label>Curso</label>
+            <select name="course_id" required>
+              {% for c in cursos %}<option value="{{ c.id }}">{{ c.nombre }} — {{ c.precio | cop }}</option>{% endfor %}
+            </select></div>
+          <div class="field"><label>Instructor</label>
+            <select name="instructor_id"><option value="">— Sin asignar —</option>
+              {% for i in instructores %}<option value="{{ i.id }}">{{ i.nombre }}</option>{% endfor %}
+            </select></div>
+          <div class="field"><label>Precio acordado (COP)</label><input type="text" class="money" name="precio_acordado" placeholder="(usa precio del curso)"></div>
+          <div class="field"><label>Fecha de inscripción</label><input type="date" name="fecha_inscripcion"></div>
+        </div>
+        <button class="btn" type="submit">Inscribir</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+
+  <div>
+    <div class="card">
+      <h3>Datos personales</h3>
+      <dl class="kv">
+        <dt>Cédula</dt><dd>{{ est.cedula or '—' }}</dd>
+        <dt>Peso</dt><dd>{{ (est.peso_kg|string + ' kg') if est.peso_kg else '—' }}</dd>
+        <dt>EPS</dt><dd>{{ est.eps or '—' }}</dd>
+        <dt>Nacimiento</dt><dd>{{ est.fecha_nacimiento | fecha }}</dd>
+        <dt>Dirección</dt><dd>{{ est.direccion or '—' }}</dd>
+      </dl>
+      <div class="divider"></div>
+      <h4>🚨 Contacto de emergencia</h4>
+      <dl class="kv">
+        <dt>Nombre</dt><dd>{{ est.contacto_emergencia_nombre or '—' }}</dd>
+        <dt>Teléfono</dt><dd>{{ est.contacto_emergencia_telefono or '—' }}</dd>
+      </dl>
+    </div>
+
+    {% if user.role.value == 'admin' %}
+    <div class="card">
+      <div class="card-head"><h3>Historial de pagos</h3></div>
+      {% set pagos = [] %}
+      {% for enr in est.enrollments %}{% for p in enr.payments %}{% set _ = pagos.append(p) %}{% endfor %}{% endfor %}
+      {% if pagos %}
+      <table class="tbl">
+        <thead><tr><th>Fecha</th><th>Concepto</th><th class="num">Monto</th></tr></thead>
+        <tbody>
+        {% for p in pagos|sort(attribute='fecha', reverse=True) %}
+          <tr><td class="mono small">{{ p.fecha | fecha }}</td>
+            <td><span class="badge neutral">{{ p.concepto.value }}</span> <span class="tiny muted">{{ p.metodo.value }}</span></td>
+            <td class="num mono">{{ p.monto | cop }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="muted small">Sin pagos registrados.</p>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

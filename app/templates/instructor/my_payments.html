@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Mis pagos · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Mis pagos{% endblock %}
+
+{% set concepto_label = {'por_salto':'Por salto','salario':'Salario','bono':'Bono','comision':'Comisión','otro':'Otro'} %}
+
+{% block content %}
+<div class="stats">
+  <div class="stat ok">
+    <div class="label">Total recibido</div>
+    <div class="value sm">{{ total | cop }}</div>
+    <div class="sub">compensación acumulada</div>
+  </div>
+  {% for concepto, val in por_concepto.items() %}
+  <div class="stat">
+    <div class="label">{{ concepto_label[concepto] }}</div>
+    <div class="value sm">{{ val | cop }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>Historial de mis pagos</h3>
+    <div class="spacer"></div><span class="small muted">{{ pagos|length }} pagos</span></div>
+  {% if pagos %}
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Fecha</th><th>Concepto</th><th>Método</th><th>Referencia</th><th class="num">Monto</th></tr></thead>
+      <tbody>
+      {% for p in pagos %}
+        <tr>
+          <td class="mono small">{{ p.fecha | fecha }}</td>
+          <td><span class="badge neutral">{{ concepto_label[p.concepto.value] }}</span>
+            {% if p.saltos %}<span class="tiny muted"> · {{ p.saltos }} saltos</span>{% endif %}</td>
+          <td class="small">{{ p.metodo.value }}</td>
+          <td class="small muted">{{ p.referencia or '—' }}</td>
+          <td class="num mono" style="font-weight:600">{{ p.monto | cop }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty"><div class="big">💵</div>Aún no tienes pagos registrados.
+    <div class="small mt20">La administración registrará aquí tu compensación por saltos y servicios.</div></div>
+  {% endif %}
+</div>
+
+<div class="card" style="background:#f6efe5">
+  <p class="small muted mb0">ℹ️ Esta sección muestra únicamente tus pagos como instructor.
+    Las finanzas de la escuela (ingresos, cartera y pagos de estudiantes) son gestionadas por la administración.</p>
+</div>
+{% endblock %}

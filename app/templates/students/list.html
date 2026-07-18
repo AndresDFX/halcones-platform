@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Estudiantes · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Estudiantes{% endblock %}
+{% block topbar_actions %}
+  {% if user.role.value == 'admin' %}
+  <a href="/usuarios/nuevo?rol=estudiante" class="btn sm">＋ Nuevo estudiante</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <form method="get" action="/estudiantes" style="display:flex;gap:10px;margin-bottom:16px">
+    <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre, cédula o correo…" style="max-width:360px">
+    <button class="btn outline sm" type="submit">Buscar</button>
+    {% if q %}<a href="/estudiantes" class="btn ghost sm">Limpiar</a>{% endif %}
+  </form>
+
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Estudiante</th><th>Cédula</th><th>Contacto</th><th>Cursos</th><th>Avance</th>{% if user.role.value == 'admin' %}<th>Saldo</th>{% endif %}</tr></thead>
+      <tbody>
+      {% for e in estudiantes %}
+        <tr class="row-link" onclick="location.href='/estudiantes/{{ e.id }}'">
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="avatar" style="width:32px;height:32px;font-size:.78rem;background:var(--maroon);color:#fff">{{ e.iniciales }}</div>
+              <div>
+                <div style="font-weight:600">{{ e.nombre }}</div>
+                <div class="tiny muted">{{ e.email }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="mono small">{{ e.cedula or '—' }}</td>
+          <td class="small">{{ e.telefono or '—' }}</td>
+          <td>
+            {% for enr in e.enrollments %}<span class="tag-course">{{ enr.course.modalidad }}</span> {% else %}<span class="muted small">—</span>{% endfor %}
+          </td>
+          <td style="min-width:120px">
+            {% set enr = e.enrollments[0] if e.enrollments else None %}
+            {% if enr %}
+              <div class="progress"><span style="width:{{ enr.porcentaje_avance }}%"></span></div>
+              <div class="tiny muted">{{ enr.niveles_aprobados }}/{{ enr.course.niveles_total }} niveles</div>
+            {% else %}<span class="muted small">Sin inscripción</span>{% endif %}
+          </td>
+          {% if user.role.value == 'admin' %}
+          <td class="mono">
+            {% set saldo = e.enrollments|sum(attribute='saldo') if e.enrollments else 0 %}
+            {% if saldo > 0 %}<span style="color:var(--danger);font-weight:600">{{ saldo | cop }}</span>
+            {% else %}<span class="badge ok">al día</span>{% endif %}
+          </td>
+          {% endif %}
+        </tr>
+      {% else %}
+        <tr><td colspan="6"><div class="empty">No se encontraron estudiantes.</div></td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

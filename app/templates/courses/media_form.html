@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Añadir contenido · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Añadir contenido a {{ curso.nombre }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:680px">
+<form method="post" action="/cursos/{{ curso.id }}/media/nuevo" enctype="multipart/form-data">
+  <div class="field">
+    <label>Tipo de contenido</label>
+    <select name="tipo">
+      <option value="video">🎬 Video</option>
+      <option value="manual">📄 Manual</option>
+      <option value="documento">📎 Documento</option>
+    </select>
+  </div>
+  <div class="field"><label>Título <span class="req">*</span></label>
+    <input type="text" name="titulo" placeholder="Ej: Teoría AFF — Nivel 1" required></div>
+  <div class="field"><label>Descripción</label>
+    <textarea name="descripcion" rows="2"></textarea></div>
+  <div class="field">
+    <label>Nivel asociado (opcional)</label>
+    <select name="level_id">
+      <option value="">— General del curso —</option>
+      {% for lvl in curso.levels %}<option value="{{ lvl.id }}">{{ lvl.titulo }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label>Enlace (YouTube, Vimeo o descarga)</label>
+    <input type="url" name="url" placeholder="https://youtu.be/...">
+    <div class="hint">Para videos puedes pegar el enlace de YouTube y se reproducirá embebido.</div>
+  </div>
+  <div class="field">
+    <label>…o subir un archivo</label>
+    <input type="file" name="archivo">
+    <div class="hint">Manuales en PDF, o archivos de video. Máx {{ 512 }} MB.</div>
+  </div>
+  <div class="btn-row">
+    <a href="/cursos/{{ curso.id }}" class="btn outline">Cancelar</a>
+    <button class="btn" type="submit">Guardar contenido</button>
+  </div>
+</form>
+</div>
+{% endblock %}

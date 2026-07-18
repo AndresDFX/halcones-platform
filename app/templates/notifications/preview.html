@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Previsualizar · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Previsualización · {{ regla.nombre }}{% endblock %}
+{% block topbar_actions %}
+  <a href="/notificaciones" class="btn ghost sm">← Volver</a>
+  <form method="post" action="/notificaciones/{{ regla.id }}/ejecutar" style="display:inline">
+    <button class="btn sm" type="submit">▶ Ejecutar ahora</button></form>
+{% endblock %}
+
+{% block content %}
+{% if not smtp_ok %}
+<div class="alert" style="background:var(--warn-bg);color:var(--warn);border:1px solid #ecd9a8">
+  ⚙️ Modo simulación: al ejecutar, estas notificaciones se registrarán como <b>simuladas</b> (no se envían).
+</div>
+{% endif %}
+
+<div class="card">
+  <div class="card-head"><h3>Destinatarios calculados</h3>
+    <div class="spacer"></div>
+    <span class="badge {{ 'info' if destinatarios else 'neutral' }}">{{ destinatarios|length }} destinatario(s)</span>
+  </div>
+  {% if destinatarios %}
+    {% for d in destinatarios %}
+    <div style="border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;{{ 'opacity:.55' if d.ya_enviado }}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div class="avatar" style="width:30px;height:30px;font-size:.72rem;background:var(--maroon);color:#fff">✉</div>
+        <div style="flex:1">
+          <div style="font-weight:600">{{ d.nombre }} <span class="tiny muted">· {{ d.email }}</span></div>
+        </div>
+        {% if d.ya_enviado %}<span class="badge neutral">ya enviado (se omite)</span>
+        {% else %}<span class="badge ok">nuevo</span>{% endif %}
+      </div>
+      <div style="font-weight:600;font-size:.9rem">{{ d.asunto }}</div>
+      <div class="small muted" style="white-space:pre-line;margin-top:6px">{{ d.cuerpo }}</div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty"><div class="big">🕊️</div>Ningún destinatario cumple los criterios en este momento.
+      <div class="small mt20">
+        {% if regla.tipo.value == 'recordatorio_salto' %}
+        No hay estudiantes con saltos programados dentro de los próximos {{ regla.dias_antelacion }} días.
+        {% else %}
+        No hay estudiantes que hayan saltado una sola vez hace ≥ {{ regla.intervalo_dias }} días.
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

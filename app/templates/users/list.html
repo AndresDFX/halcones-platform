@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Usuarios · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Usuarios{% endblock %}
+{% block topbar_actions %}
+  <a href="/usuarios/nuevo?rol=estudiante" class="btn outline sm">＋ Estudiante</a>
+  <a href="/usuarios/nuevo?rol=instructor" class="btn outline sm">＋ Instructor</a>
+  <a href="/usuarios/nuevo?rol=admin" class="btn sm">＋ Administrador</a>
+{% endblock %}
+
+{% set role_badge = {'admin':'maroon','instructor':'info','estudiante':'neutral'} %}
+{% set role_label = {'admin':'Administrador','instructor':'Instructor','estudiante':'Estudiante'} %}
+
+{% block content %}
+<div class="alert info">🔒 No hay registro público: el administrador crea las cuentas y entrega las credenciales a estudiantes e instructores.</div>
+
+<div class="card">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
+    <a href="/usuarios" class="btn {{ 'sm' if rol else 'outline sm' }}">Todos</a>
+    <a href="/usuarios?rol=estudiante" class="btn {{ 'sm' if rol=='estudiante' else 'outline sm' }}">Estudiantes ({{ conteos.estudiante }})</a>
+    <a href="/usuarios?rol=instructor" class="btn {{ 'sm' if rol=='instructor' else 'outline sm' }}">Instructores ({{ conteos.instructor }})</a>
+    <a href="/usuarios?rol=admin" class="btn {{ 'sm' if rol=='admin' else 'outline sm' }}">Administradores ({{ conteos.admin }})</a>
+    <div style="flex:1"></div>
+    <form method="get" action="/usuarios" style="display:flex;gap:8px">
+      {% if rol %}<input type="hidden" name="rol" value="{{ rol }}">{% endif %}
+      <input type="text" name="q" value="{{ q }}" placeholder="Buscar…" style="max-width:220px">
+      <button class="btn outline sm" type="submit">Buscar</button>
+    </form>
+  </div>
+
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Usuario</th><th>Rol</th><th>Contacto</th><th>Estado</th><th style="width:1%">Acciones</th></tr></thead>
+      <tbody>
+      {% for u in usuarios %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="avatar" style="width:32px;height:32px;font-size:.78rem;background:var(--maroon);color:#fff">{{ u.iniciales }}</div>
+              <div><div style="font-weight:600">{{ u.nombre }}</div><div class="tiny muted">{{ u.email }}</div></div>
+            </div>
+          </td>
+          <td><span class="badge {{ role_badge[u.role.value] }}">{{ role_label[u.role.value] }}</span></td>
+          <td class="small">{{ u.telefono or '—' }}<br><span class="tiny muted">{{ u.cedula or '' }}</span></td>
+          <td>{% if u.activo %}<span class="badge ok">activo</span>{% else %}<span class="badge danger">inactivo</span>{% endif %}</td>
+          <td>
+            <div style="display:flex;gap:6px;align-items:center">
+              {% if u.role.value == 'estudiante' %}<a href="/estudiantes/{{ u.id }}" class="btn ghost sm" title="Ficha operativa">📋</a>{% endif %}
+              <a href="/usuarios/{{ u.id }}/editar" class="btn outline sm">Editar</a>
+              {% if u.id != user.id %}
+              <form method="post" action="/usuarios/{{ u.id }}/estado">
+                <button class="btn ghost sm" title="Activar/desactivar">{{ '🚫' if u.activo else '✅' }}</button></form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5"><div class="empty">No hay usuarios con ese filtro.</div></td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Mis pagos · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Mis pagos{% endblock %}
+
+{% block content %}
+<div class="stats">
+  <div class="stat red"><div class="label">Saldo pendiente</div><div class="value sm">{{ saldo_total | cop }}</div></div>
+  {% for e in enrollments %}
+  <div class="stat"><div class="label">{{ e.course.modalidad }}</div>
+    <div class="value sm">{{ e.total_pagado | cop }}</div>
+    <div class="sub">de {{ e.precio_acordado | cop }} · {{ e.porcentaje_pagado }}%</div></div>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>Historial de pagos</h3></div>
+  {% if pagos %}
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Fecha</th><th>Curso</th><th>Concepto</th><th>Método</th><th>Referencia</th><th class="num">Monto</th></tr></thead>
+      <tbody>
+      {% for p in pagos %}
+        <tr><td class="mono small">{{ p.fecha | fecha }}</td>
+          <td class="small">{{ p.enrollment.course.modalidad }}</td>
+          <td><span class="badge neutral">{{ p.concepto.value }}</span></td>
+          <td class="small">{{ p.metodo.value }}</td>
+          <td class="small muted">{{ p.referencia or '—' }}</td>
+          <td class="num mono" style="font-weight:600">{{ p.monto | cop }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<div class="empty"><div class="big">💳</div>Aún no tienes pagos registrados.</div>{% endif %}
+</div>
+
+<div class="card" style="background:#f6efe5">
+  <h3>Medios de pago</h3>
+  <p class="small muted">Puedes pagar por transferencia, consignación, efectivo o link de pago virtual.
+    La reserva del curso AFF es desde $ 2.000.000. Para dudas, contacta a tu instructor.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sin conexión · {{ APP_NAME }}</title>
+  <link rel="icon" type="image/png" href="/static/img/favicon.png">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div style="min-height:100vh;display:grid;place-items:center;text-align:center;padding:30px">
+  <div>
+    <img src="/static/img/logo-shield.png" style="width:110px;opacity:.85" alt="Halcones">
+    <h1 style="font-size:1.8rem;color:var(--maroon);margin:14px 0 6px">Sin conexión</h1>
+    <p class="muted" style="max-width:380px;margin:0 auto 20px">
+      No pudimos conectarnos. Revisa tu conexión a internet e inténtalo de nuevo.</p>
+    <button class="btn" onclick="location.reload()">Reintentar</button>
+  </div>
+</div>
+</body>
+</html>

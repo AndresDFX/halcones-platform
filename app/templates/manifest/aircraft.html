@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Aviones · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Flota de aviones{% endblock %}
+{% block topbar_actions %}<a href="/manifiesto" class="btn ghost sm">← Manifiesto</a>{% endblock %}
+
+{% block content %}
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Aviones registrados</h3></div>
+      <div class="grid cols-2">
+        {% for a in aviones %}
+        <div style="border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:center">
+          <div class="mi-ico" style="width:48px;height:48px;font-size:1.6rem">✈️</div>
+          <div>
+            <div style="font-family:var(--head);font-size:1.2rem;color:var(--maroon)">{{ a.matricula }}</div>
+            <div class="small">{{ a.modelo }}</div>
+            <div class="tiny muted">Capacidad: {{ a.capacidad }} plazas {{ '· inactivo' if not a.activo }}</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="empty" style="grid-column:1/-1"><div class="big">✈️</div>No hay aviones registrados.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div>
+    {% if user.role.value == 'admin' %}
+    <div class="card">
+      <h3>➕ Registrar avión</h3>
+      <form method="post" action="/manifiesto/aviones/nuevo">
+        <div class="field"><label>Matrícula <span class="req">*</span></label><input type="text" name="matricula" placeholder="HK-4512" required></div>
+        <div class="field"><label>Modelo <span class="req">*</span></label><input type="text" name="modelo" placeholder="Cessna 206" required></div>
+        <div class="field"><label>Capacidad</label><input type="number" name="capacidad" value="4"></div>
+        <div class="field"><label>Notas</label><input type="text" name="notas"></div>
+        <button class="btn block" type="submit">Registrar</button>
+      </form>
+    </div>
+    {% else %}
+    <div class="card"><p class="muted">Solo el administrador puede registrar aviones.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

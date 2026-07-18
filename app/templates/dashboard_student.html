@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Mi panel · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Hola, {{ user.nombre.split(' ')[0] }} 👋{% endblock %}
+
+{% block content %}
+<div class="stats">
+  <div class="stat">
+    <div class="label">Mis cursos</div>
+    <div class="value">{{ enrollments|length }}</div>
+    <div class="sub">inscripciones</div>
+  </div>
+  <div class="stat gold">
+    <div class="label">Próximos saltos</div>
+    <div class="value">{{ proximos_saltos|length }}</div>
+    <div class="sub">programados</div>
+  </div>
+  <div class="stat red">
+    <div class="label">Saldo pendiente</div>
+    <div class="value sm">{{ saldo_total | cop }}</div>
+    <div class="sub">por pagar</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Mis cursos y avance</h3></div>
+      {% if enrollments %}
+        {% for e in enrollments %}
+        <div style="padding:14px 0;border-bottom:1px solid var(--line)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="flex:1">
+              <a href="/portal/curso/{{ e.course.id }}" style="font-weight:700;font-size:1.05rem">{{ e.course.nombre }}</a>
+              <div class="small muted">{{ e.course.modalidad }} · Instructor: {{ e.instructor.nombre if e.instructor else '—' }}</div>
+            </div>
+            <span class="badge {{ 'ok' if e.estado.value=='completado' else 'info' }}">{{ e.estado.value }}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+            <div style="flex:1">
+              <div class="small muted" style="display:flex;justify-content:space-between">
+                <span>Avance · nivel {{ e.niveles_aprobados }}/{{ e.course.niveles_total }}</span>
+                <span>{{ e.porcentaje_avance }}%</span>
+              </div>
+              <div class="progress" style="margin-top:4px"><span style="width:{{ e.porcentaje_avance }}%"></span></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:10px">
+            <div style="flex:1">
+              <div class="small muted" style="display:flex;justify-content:space-between">
+                <span>Pago</span><span>{{ e.total_pagado | cop }} / {{ e.precio_acordado | cop }}</span>
+              </div>
+              <div class="progress gold" style="margin-top:4px"><span style="width:{{ e.porcentaje_pagado }}%"></span></div>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-top:12px">
+            <a href="/portal/curso/{{ e.course.id }}" class="btn sm">🎬 Ver contenido</a>
+            {% if e.saldo > 0 %}<span class="badge danger">Saldo {{ e.saldo | cop }}</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty"><div class="big">🪂</div>Aún no estás inscrito en ningún curso.
+          <div class="mt20"><a href="/cursos" class="btn">Ver catálogo de cursos</a></div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Mis próximos saltos</h3></div>
+      {% if proximos_saltos %}
+        {% for s in proximos_saltos %}
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)">
+          <div class="avatar" style="background:var(--maroon);color:#fff;border-radius:10px">{{ s.load.jump_day.fecha.day }}</div>
+          <div style="flex:1">
+            <div style="font-weight:600">{{ s.tipo_salto or 'Salto' }}</div>
+            <div class="small muted">{{ s.load.jump_day.fecha | fecha_larga }} · {{ s.load.hora_estimada or '—' }} · Vuelo {{ s.load.numero }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty small"><div class="big">🗓️</div>No tienes saltos programados.</div>
+      {% endif %}
+    </div>
+
+    <div class="card" style="background:linear-gradient(135deg,var(--maroon),var(--red));color:#fff;border:none">
+      <h3 style="color:#fff">📍 Zona de salto</h3>
+      <p style="color:#f0d9d5;margin-bottom:6px">Braaap Park · Vía Rozo–Cali</p>
+      <p class="small" style="color:#f0d9d5">A 15 minutos del aeropuerto Alfonso Bonilla Aragón. Recuerda llegar con la teoría al día y tus documentos completos.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

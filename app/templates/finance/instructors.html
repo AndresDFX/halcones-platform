@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Nómina instructores · {{ APP_NAME }}{% endblock %}
+{% block page_title %}Nómina de instructores{% endblock %}
+
+{% set concepto_label = {'por_salto':'Por salto','salario':'Salario','bono':'Bono','comision':'Comisión','otro':'Otro'} %}
+
+{% block content %}
+<div class="stats">
+  <div class="stat red">
+    <div class="label">Total pagado a instructores</div>
+    <div class="value sm">{{ total_nomina | cop }}</div>
+    <div class="sub">egresos de nómina</div>
+  </div>
+  {% for i in instructores %}
+  <div class="stat">
+    <div class="label">{{ i.nombre }}</div>
+    <div class="value sm">{{ totales.get(i.id, 0) | cop }}</div>
+    <div class="sub">{{ i.especialidad or 'Instructor' }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Pagos registrados</h3>
+        <div class="spacer"></div><span class="small muted">{{ pagos|length }} pagos</span></div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Fecha</th><th>Instructor</th><th>Concepto</th><th>Método</th><th class="num">Monto</th></tr></thead>
+          <tbody>
+          {% for p in pagos %}
+            <tr>
+              <td class="mono small">{{ p.fecha | fecha }}</td>
+              <td>{{ p.instructor.nombre }}</td>
+              <td><span class="badge neutral">{{ concepto_label[p.concepto.value] }}</span>
+                {% if p.saltos %}<span class="tiny muted"> · {{ p.saltos }} saltos</span>{% endif %}</td>
+              <td class="small">{{ p.metodo.value }}</td>
+              <td class="num mono" style="font-weight:600">{{ p.monto | cop }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5"><div class="empty">Sin pagos de nómina registrados.</div></td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h3>➕ Registrar pago a instructor</h3>
+      <form method="post" action="/finanzas/instructores/pago">
+        <div class="field"><label>Instructor <span class="req">*</span></label>
+          <select name="instructor_id" required>
+            <option value="">— Selecciona —</option>
+            {% for i in instructores %}
+            <option value="{{ i.id }}" {{ 'selected' if seleccionado==i.id }}>{{ i.nombre }}</option>{% endfor %}
+          </select></div>
+        <div class="form-grid">
+          <div class="field"><label>Monto (COP) <span class="req">*</span></label>
+            <input type="text" class="money" name="monto" placeholder="150.000" required></div>
+          <div class="field"><label>Fecha</label><input type="date" name="fecha"></div>
+          <div class="field"><label>Concepto</label>
+            <select name="concepto">
+              <option value="por_salto">Por salto</option>
+              <option value="salario">Salario</option>
+              <option value="bono">Bono</option>
+              <option value="comision">Comisión</option>
+              <option value="otro">Otro</option>
+            </select></div>
+          <div class="field"><label>Método</label>
+            <select name="metodo">
+              <option value="transferencia">Transferencia</option>
+              <option value="efectivo">Efectivo</option>
+              <option value="consignacion">Consignación</option>
+              <option value="link">Link</option>
+            </select></div>
+          <div class="field"><label>N° de saltos</label><input type="number" name="saltos" placeholder="(opcional)"></div>
+          <div class="field"><label>Referencia</label><input type="text" name="referencia"></div>
+        </div>
+        <div class="field"><label>Nota</label><input type="text" name="nota"></div>
+        <button class="btn block" type="submit">Registrar pago</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
