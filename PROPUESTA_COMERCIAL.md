@@ -26,8 +26,8 @@ AFF**, y está diseñada precisamente para ayudar a **vender más cursos y no pe
   automáticamente el curso AFF cada cierto tiempo.
 - **Seguimiento financiero** claro (ingresos, cartera por cobrar, nómina de instructores).
 
-> **Con recuperar o convertir UN solo estudiante AFF adicional al año, la plataforma y toda su
-> operación anual quedan pagadas.** El retorno llega con el primer curso extra.
+> **El precio es menor que el valor de un curso AFF: una sola venta adicional cubre la
+> plataforma.** El retorno llega con el primer estudiante extra que ayude a captar o retener.
 
 ---
 
@@ -104,14 +104,14 @@ inmediato.
 
 | Concepto | Valor |
 |---|---|
-| **Precio total (llave en mano)** | **$5.500.000 COP** — ~13 % menos que un curso AFF |
+| **Precio total (llave en mano)** | **$6.000.000 COP** — menos que un curso AFF |
 
 **Forma de pago (50 / 50):**
 
 | Momento | Porcentaje | Valor |
 |---|---|---|
-| **Anticipo** — antes de empezar | 50 % | **$2.750.000 COP** |
-| **Saldo** — al finalizar el desarrollo (entrega) | 50 % | **$2.750.000 COP** |
+| **Anticipo** — antes de empezar | 50 % | **$3.000.000 COP** |
+| **Saldo** — al finalizar el desarrollo (entrega) | 50 % | **$3.000.000 COP** |
 
 Incluye: instalación/despliegue en Render con URL pública, carga de la información inicial,
 personalización de marca, capacitación de uso (1 sesión) y la **garantía de cambios** descrita
@@ -176,13 +176,15 @@ Recomendado para mantener la plataforma actualizada, segura y evolucionando.
 
 | Concepto | Valor |
 |---|---|
-| Precio de la plataforma (única vez) | $5.500.000 |
+| Precio de la plataforma (única vez) | $6.000.000 |
 | Operación anual estimada (hosting + dominio + correo) | ~$700.000 – $1.000.000 |
 | **Valor de UN curso AFF** | **$6.333.333** |
 
-**Punto de equilibrio: menos de un curso AFF.** Si la plataforma —gracias a los recordatorios
-y a la reactivación de quienes saltaron una vez— ayuda a **cerrar un solo estudiante AFF
-adicional al año**, ya cubre su costo total. Todo estudiante adicional a partir de ahí es
+**El precio ($6.000.000) es menor que el valor de un curso AFF ($6.333.333):** una sola venta
+adicional cubre el desarrollo de la plataforma, y su operación anual (~$1.000.000) equivale a
+una fracción de otro curso. Si —gracias a los recordatorios y a la reactivación de quienes
+saltaron una vez— ayuda a **cerrar uno o dos estudiantes AFF adicionales al año**, la inversión
+y su operación quedan cubiertas con holgura. Todo estudiante adicional a partir de ahí es
 ganancia neta, además del ahorro de tiempo administrativo y una imagen más profesional.
 
 ---

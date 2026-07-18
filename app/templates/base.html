@@ -60,8 +60,6 @@
         <a href="/cursos" class="{{ 'active' if path.startswith('/cursos') or path.startswith('/portal/curso') }}"><span class="ico">🎓</span> Cursos</a>
         <a href="/portal/perfil" class="{{ 'active' if path == '/portal/perfil' }}"><span class="ico">👤</span> Mi perfil</a>
       {% endif %}
-      <div class="section">Sistema</div>
-      <a href="/api/docs" target="_blank"><span class="ico">🔌</span> API / Docs</a>
     </nav>
     {% if user %}
     <div class="userbox">
@@ -74,6 +72,7 @@
     </div>
     {% endif %}
   </aside>
+  <div class="sidebar-backdrop" onclick="document.getElementById('sidebar').classList.remove('open')"></div>
 
   <div class="main">
     <div class="topbar">
