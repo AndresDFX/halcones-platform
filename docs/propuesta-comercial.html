@@ -76,18 +76,19 @@
       <b>$15.000.000 y $60.000.000</b>. Esta plataforma se ubica en ese rango de valor, pero se
       ofrece —por ser la versión inicial— con un <b>precio de lanzamiento por debajo de un curso AFF</b>.</p>
 
-    <h2>Inversión (desarrollo — pago único)</h2>
+    <h2>Inversión y forma de pago</h2>
     <table>
-      <tr><th>Opción</th><th>Precio</th><th>Detalle</th></tr>
-      <tr><td><b>A — Llave en mano</b><br><span class="muted">recomendada</span></td>
-          <td class="price">$5.500.000</td>
-          <td>Entrega desplegada y funcionando, con capacitación. ~13 % menos que un curso AFF.</td></tr>
-      <tr><td><b>B — En dos cuotas</b></td>
-          <td class="price">$2.900.000 × 2</td>
-          <td>50 % anticipo y 50 % contra entrega ($5.800.000 total).</td></tr>
+      <tr><th>Concepto</th><th>Valor</th></tr>
+      <tr><td><b>Precio total (llave en mano)</b><br><span class="muted">~13 % menos que un curso AFF</span></td>
+          <td class="price">$5.500.000</td></tr>
+    </table>
+    <table>
+      <tr><th>Forma de pago (50 / 50)</th><th>%</th><th>Valor</th></tr>
+      <tr><td><b>Anticipo</b> — antes de empezar</td><td>50 %</td><td class="price">$2.750.000</td></tr>
+      <tr><td><b>Saldo</b> — al finalizar el desarrollo (entrega)</td><td>50 %</td><td class="price">$2.750.000</td></tr>
     </table>
     <p class="muted">Incluye instalación con URL pública, carga de datos inicial, personalización de
-      marca, capacitación (1 sesión) y 30 días de garantía.</p>
+      marca, capacitación (1 sesión) y garantía de cambios (ver más abajo).</p>
 
     <h2>Costos recurrentes (los paga Halcones al proveedor)</h2>
     <p class="muted">No los cobra el desarrollador; se listan para total transparencia.</p>
@@ -119,11 +120,39 @@
       <small>Si ayuda a cerrar un solo estudiante AFF adicional al año, la inversión queda cubierta.</small>
     </div>
 
-    <h2>Tiempos y condiciones</h2>
+    <h2>Proceso de trabajo y cronograma</h2>
+    <p><b>Desarrollo: 2 semanas.</b> <b>Garantía de cambios: 2 semanas</b> posteriores a la
+      entrega (ajustes y correcciones sin costo).</p>
+    <table>
+      <tr><th>#</th><th>Fase</th><th>Descripción</th></tr>
+      <tr><td>1</td><td><b>Reunión inicial</b></td><td>Levantamiento a fondo de requerimientos y riesgos.</td></tr>
+      <tr><td>2</td><td><b>Primera versión funcional</b></td><td>Desarrollo y despliegue de una versión para revisión.</td></tr>
+      <tr><td>3</td><td><b>Pruebas del cliente</b></td><td>Halcones prueba la plataforma en su operación real.</td></tr>
+      <tr><td>4</td><td><b>Ajustes</b></td><td>Se incorporan los cambios surgidos de las pruebas.</td></tr>
+      <tr><td>5</td><td><b>Entrega final</b></td><td>Versión final desplegada, capacitación y puesta en marcha.</td></tr>
+    </table>
+    <div class="highlight" style="background:linear-gradient(135deg,#5c0503,#7E0704)">
+      <div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;font-size:.9rem">
+        <div><b>Semana 1</b><br><small>Reunión + 1ª versión</small></div>
+        <div><b>Semana 2</b><br><small>Pruebas + ajustes + entrega</small></div>
+        <div><b>+2 semanas</b><br><small>Garantía de cambios</small></div>
+      </div>
+    </div>
+
+    <h2>Puesta en marcha (despliegue)</h2>
+    <p>Se publica en <b>Render</b> con <b>URL pública</b> y HTTPS gratuito. El código ya está en
+      GitHub; el despliegue usa el <i>blueprint</i> incluido:</p>
     <ul class="chk">
-      <li>La versión inicial ya está construida, probada y lista para desplegar.</li>
-      <li>Puesta en marcha: 3–5 días hábiles desde la aceptación.</li>
-      <li>Garantía de 30 días y capacitación incluida.</li>
+      <li>Conectar el repositorio en Render (New → Blueprint) → crea la app + base de datos.</li>
+      <li>Definir la URL pública y (opcional) el correo SMTP.</li>
+      <li>(Opcional) Conectar un dominio propio de Halcones.</li>
+      <li>(Opcional) Activar el envío real de correos y el cron de notificaciones.</li>
+    </ul>
+
+    <h2>Condiciones</h2>
+    <ul class="chk">
+      <li>Pago 50 % anticipo + 50 % contra entrega final.</li>
+      <li>Garantía de cambios de 2 semanas y capacitación incluida.</li>
       <li>Al completar el pago, el código y los datos quedan a disposición de Halcones.</li>
     </ul>
     <p class="muted"><b>No incluye</b> (se cotiza aparte): pasarela de pagos/facturación DIAN,

@@ -14,21 +14,25 @@ El repositorio ya incluye todo lo necesario: [`render.yaml`](render.yaml) (bluep
 - El código en un repositorio **GitHub/GitLab** (la carpeta `halcones-platform/` debe
   ser la **raíz** del repo, porque ahí están `render.yaml` y el `Dockerfile`).
 
-## 1. Subir el código a GitHub
+## 1. Código en GitHub  ✅ (ya hecho)
+El repositorio ya está creado y con el código subido:
+`git@github-personal:AndresDFX/halcones-platform.git` (rama **`master`**).
+
+Para futuros cambios:
 ```bash
 cd halcones-platform
-git init && git add . && git commit -m "Halcones Paracaidismo — plataforma"
-git branch -M main
-git remote add origin https://github.com/<tu-usuario>/halcones-paracaidismo.git
-git push -u origin main
+git add . && git commit -m "cambios" && git push
 ```
+> Al crear el Blueprint, si Render pide rama, elige **`master`** (no `main`).
 
 ## 2. Crear los servicios con el Blueprint
 1. En Render: **New +** → **Blueprint**.
-2. Conecta el repositorio. Render detecta `render.yaml` y propone crear:
+2. Conecta el repositorio `AndresDFX/halcones-platform` (rama `master`). Render detecta
+   `render.yaml` y propone crear:
    - **halcones-paracaidismo** (web, Docker, plan free)
    - **halcones-db** (PostgreSQL, plan free)
-   - **halcones-notificaciones** (cron diario)
+   > El cron de notificaciones viene **comentado** en `render.yaml` porque no es gratis;
+   > ver la sección 6 para activar las notificaciones automáticas sin costo.
 3. Pulsa **Apply**. Render construye la imagen y levanta la app.
    - Al primer arranque se crean las tablas y se cargan los **datos de ejemplo**
      (`SEED_ON_STARTUP=true`).
@@ -61,11 +65,14 @@ El **PostgreSQL gratis de Render expira (~30 días)**. Dos opciones:
   pantalla de inicio*.
 
 ## 6. Notificaciones automáticas
-El cron `halcones-notificaciones` llama cada día a
-`GET /notificaciones/cron?token=$CRON_SECRET`, que ejecuta todas las reglas **activas**.
-También puedes ejecutarlas manualmente desde *Notificaciones → Ejecutar activas*.
-> Alternativa sin cron de Render: un servicio gratuito como **cron-job.org** apuntando a
-> esa misma URL con el token.
+El endpoint `GET /notificaciones/cron?token=$CRON_SECRET` ejecuta todas las reglas **activas**.
+Formas de dispararlo:
+- **Gratis (recomendado):** crea un cron en **cron-job.org** (gratuito) que llame una vez al
+  día a `https://TU-APP.onrender.com/notificaciones/cron?token=EL_CRON_SECRET`.
+- **Manual:** botón *Notificaciones → Ejecutar activas* en el panel admin.
+- **Render Cron (pago, ~US$1/mes):** descomenta el bloque `cron` en `render.yaml` y define
+  `APP_URL` y `CRON_SECRET`.
+> El `CRON_SECRET` lo genera el blueprint; cópialo desde *Environment* del servicio web.
 
 ## 7. Dominio propio (opcional)
 En el servicio web → **Settings → Custom Domains** → añade `app.halcones.co` (o el que

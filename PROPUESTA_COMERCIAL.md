@@ -60,16 +60,22 @@ inmediato.
 
 ---
 
-## 4. Inversión (desarrollo — pago único)
+## 4. Inversión y forma de pago
 
-| Opción | Precio | Detalle |
+| Concepto | Valor |
+|---|---|
+| **Precio total (llave en mano)** | **$5.500.000 COP** — ~13 % menos que un curso AFF |
+
+**Forma de pago (50 / 50):**
+
+| Momento | Porcentaje | Valor |
 |---|---|---|
-| **A — Llave en mano (recomendada)** | **$5.500.000 COP** | Pago único. Entrega desplegada y funcionando, con capacitación inicial. Es **~13 % menos que un curso AFF**. |
-| **B — En dos cuotas** | **$2.900.000 + $2.900.000** | 50 % de anticipo y 50 % contra entrega ($5.800.000 en total). |
+| **Anticipo** — antes de empezar | 50 % | **$2.750.000 COP** |
+| **Saldo** — al finalizar el desarrollo (entrega) | 50 % | **$2.750.000 COP** |
 
 Incluye: instalación/despliegue en Render con URL pública, carga de la información inicial,
-personalización de marca, capacitación de uso (1 sesión) y **30 días de garantía** por ajustes
-o correcciones sobre lo entregado.
+personalización de marca, capacitación de uso (1 sesión) y la **garantía de cambios** descrita
+en la sección 8.
 
 ---
 
@@ -141,13 +147,29 @@ ganancia neta, además del ahorro de tiempo administrativo y una imagen más pro
 
 ---
 
-## 8. Alcance, tiempos y condiciones
+## 8. Proceso de trabajo y cronograma
 
-- **Estado:** la versión inicial ya está **construida, probada y lista para desplegar**.
-- **Puesta en marcha:** 3–5 días hábiles desde la aceptación (despliegue, dominio, carga de
-  datos y capacitación).
-- **Forma de pago:** según la opción elegida en la sección 4.
-- **Garantía:** 30 días sobre lo entregado (corrección de errores sin costo).
+**Duración del desarrollo: 2 semanas.** **Garantía de cambios: 2 semanas** posteriores a la
+entrega (ajustes y correcciones sin costo sobre lo acordado).
+
+| # | Fase | Descripción |
+|---|---|---|
+| 1 | **Reunión inicial** | Levantamiento a fondo de **requerimientos y riesgos** con Halcones. |
+| 2 | **Primera versión funcional** | Desarrollo/ajuste de la plataforma y despliegue de una versión para revisión. |
+| 3 | **Pruebas del cliente** | Halcones prueba la plataforma en su operación real. |
+| 4 | **Ajustes** | Se incorporan los cambios surgidos de las pruebas. |
+| 5 | **Entrega final** | Versión final desplegada, capacitación y puesta en marcha. |
+
+```
+Semana 1        Semana 2            +2 semanas
+─────────────   ─────────────────   ───────────────────
+Reunión +       Pruebas cliente +   Garantía de cambios
+1ª versión      ajustes + entrega   (ajustes sin costo)
+```
+
+### Condiciones
+- **Forma de pago:** 50 % anticipo (antes de empezar) + 50 % contra entrega final (sección 4).
+- **Garantía de cambios:** 2 semanas tras la entrega.
 - **Capacitación:** una sesión de uso para el administrador y los instructores.
 - **Propiedad:** al completar el pago, el código y los datos quedan a disposición de Halcones.
 
@@ -159,12 +181,24 @@ ganancia neta, además del ahorro de tiempo administrativo y una imagen más pro
 
 ---
 
-## 9. Próximos pasos
+## 9. Puesta en marcha (despliegue)
 
-1. Aprobación de la propuesta y elección de la opción de pago.
-2. Registro del dominio y creación de cuentas de hosting/correo a nombre de Halcones.
-3. Despliegue en producción y capacitación.
-4. (Opcional) Activación del plan de soporte mensual.
+La plataforma se publica en **Render** con una **URL pública** (y HTTPS gratuito). El código ya
+está en GitHub; el despliegue se realiza con el *blueprint* incluido (`render.yaml`). Pasos:
+
+1. Conectar el repositorio en Render (**New → Blueprint**) → crea el servicio web + base de datos.
+2. Definir variables (URL pública y, si se desea, el correo SMTP).
+3. (Opcional) Conectar un **dominio propio** de Halcones.
+4. (Opcional) Activar el envío real de correos y el cron diario de notificaciones.
+
+Guía técnica completa en `DEPLOY_RENDER.md`.
+
+### Próximos pasos
+1. Aprobación de la propuesta y pago del anticipo (50 %).
+2. Reunión inicial de requerimientos y riesgos.
+3. Desarrollo, pruebas, ajustes y entrega final (2 semanas).
+4. Registro de dominio y cuentas de hosting/correo a nombre de Halcones.
+5. (Opcional) Activación del plan de soporte mensual.
 
 ---
 

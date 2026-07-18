@@ -42,20 +42,25 @@ services:
       - key: SMTP_FROM
         sync: false
 
-  # Cron: dispara las notificaciones activas una vez al día (08:00 UTC ≈ 03:00 Colombia).
-  # Usa la URL pública del servicio web + el token CRON_SECRET.
-  - type: cron
-    name: halcones-notificaciones
-    runtime: docker
-    plan: free
-    schedule: "0 8 * * *"
-    dockerfilePath: ./Dockerfile.cron
-    dockerContext: .
-    envVars:
-      - key: APP_URL               # p.ej. https://halcones-paracaidismo.onrender.com
-        sync: false
-      - key: CRON_SECRET           # el MISMO valor que el del servicio web
-        sync: false
+  # Cron para disparar las notificaciones activas automáticamente.
+  # ⚠️ Los Cron Jobs de Render NO son gratis (mínimo ~US$1/mes). Para un despliegue
+  #    100% gratuito, deja esto comentado y usa una de estas alternativas:
+  #      a) Un cron externo gratuito (cron-job.org) que llame cada día a
+  #         GET https://TU-APP.onrender.com/notificaciones/cron?token=CRON_SECRET
+  #      b) El botón "Ejecutar activas" del panel de administración (manual).
+  #    Para activarlo en Render, descomenta este bloque y define APP_URL y CRON_SECRET.
+  # - type: cron
+  #   name: halcones-notificaciones
+  #   runtime: docker
+  #   plan: starter
+  #   schedule: "0 8 * * *"        # 08:00 UTC ≈ 03:00 Colombia
+  #   dockerfilePath: ./Dockerfile.cron
+  #   dockerContext: .
+  #   envVars:
+  #     - key: APP_URL             # p.ej. https://halcones-paracaidismo.onrender.com
+  #       sync: false
+  #     - key: CRON_SECRET         # el MISMO valor que el del servicio web
+  #       sync: false
 
 databases:
   - name: halcones-db
