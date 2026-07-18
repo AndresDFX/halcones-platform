@@ -20,7 +20,7 @@
 {% set path = request.url.path %}
 <div class="app">
   <aside class="sidebar" id="sidebar">
-    <a href="/" class="brand" style="text-decoration:none">
+    <a href="/panel" class="brand" style="text-decoration:none">
       <img class="mark" src="/static/img/logo-mark.png" alt="Halcones">
       <div>
         <div class="name">HALCONES</div>
@@ -30,7 +30,7 @@
     <nav class="nav">
       {% if user.role.value == 'admin' %}
         <div class="section">Gestión</div>
-        <a href="/" class="{{ 'active' if path == '/' }}"><span class="ico">📊</span> Panel</a>
+        <a href="/panel" class="{{ 'active' if path == '/panel' }}"><span class="ico">📊</span> Panel</a>
         <a href="/cursos" class="{{ 'active' if path.startswith('/cursos') }}"><span class="ico">🪂</span> Cursos</a>
         <a href="/estudiantes" class="{{ 'active' if path.startswith('/estudiantes') }}"><span class="ico">🎓</span> Estudiantes</a>
         <a href="/usuarios" class="{{ 'active' if path.startswith('/usuarios') }}"><span class="ico">👥</span> Usuarios</a>
@@ -43,7 +43,7 @@
         <a href="/notificaciones" class="{{ 'active' if path.startswith('/notificaciones') }}"><span class="ico">✉️</span> Notificaciones</a>
       {% elif user.role.value == 'instructor' %}
         <div class="section">Gestión</div>
-        <a href="/" class="{{ 'active' if path == '/' }}"><span class="ico">📊</span> Panel</a>
+        <a href="/panel" class="{{ 'active' if path == '/panel' }}"><span class="ico">📊</span> Panel</a>
         <a href="/cursos" class="{{ 'active' if path.startswith('/cursos') }}"><span class="ico">🪂</span> Cursos</a>
         <a href="/estudiantes" class="{{ 'active' if path.startswith('/estudiantes') }}"><span class="ico">🎓</span> Estudiantes</a>
         <div class="section">Operación</div>
@@ -53,7 +53,7 @@
         <a href="/instructor/pagos" class="{{ 'active' if path.startswith('/instructor/pagos') }}"><span class="ico">💵</span> Mis pagos</a>
       {% else %}
         <div class="section">Mi progreso</div>
-        <a href="/" class="{{ 'active' if path == '/' }}"><span class="ico">📊</span> Panel</a>
+        <a href="/panel" class="{{ 'active' if path == '/panel' }}"><span class="ico">📊</span> Panel</a>
         <a href="/portal/saltos" class="{{ 'active' if path == '/portal/saltos' }}"><span class="ico">🪂</span> Mis saltos</a>
         <a href="/portal/pagos" class="{{ 'active' if path == '/portal/pagos' }}"><span class="ico">💳</span> Mis pagos</a>
         <div class="section">Formación</div>

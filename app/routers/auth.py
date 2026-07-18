@@ -14,10 +14,10 @@ router = APIRouter()
 
 
 @router.get("/login")
-def login_form(request: Request, db: Session = Depends(get_db), next: str = "/"):
+def login_form(request: Request, db: Session = Depends(get_db), next: str = "/panel"):
     user = get_current_user(request, db)
     if user:
-        return RedirectResponse("/", status_code=303)
+        return RedirectResponse("/panel", status_code=303)
     return render(request, "login.html", error=None, next=next)
 
 
@@ -27,7 +27,7 @@ def login_submit(
     db: Session = Depends(get_db),
     email: str = Form(...),
     password: str = Form(...),
-    next: str = Form("/"),
+    next: str = Form("/panel"),
 ):
     user = db.query(User).filter(User.email == email.strip().lower()).first()
     if not user or not verify_password(password, user.password_hash):
@@ -38,7 +38,7 @@ def login_submit(
                       error="Tu cuenta está desactivada. Contacta al administrador.",
                       next=next)
     token = create_access_token(user.id, user.role.value)
-    resp = RedirectResponse(next or "/", status_code=303)
+    resp = RedirectResponse(next or "/panel", status_code=303)
     resp.set_cookie(
         COOKIE_NAME, token, httponly=True, samesite="lax",
         max_age=settings.access_token_expire_minutes * 60,

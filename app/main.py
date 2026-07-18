@@ -12,7 +12,7 @@ from .database import Base, engine, SessionLocal
 from .deps import AuthRedirect
 from .templating import templates
 from .routers import (auth, dashboard, courses, students, finance, manifest, portal,
-                      api, users, instructor, notifications)
+                      api, users, instructor, notifications, public)
 from . import seed as seed_module
 
 app = FastAPI(
@@ -73,6 +73,7 @@ async def http_exception_handler(request: Request, exc: FastAPIHTTPException):
 
 
 # Rutas
+app.include_router(public.router)
 app.include_router(auth.router)
 app.include_router(dashboard.router)
 app.include_router(courses.router)

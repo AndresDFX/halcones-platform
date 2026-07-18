@@ -14,7 +14,7 @@ from ..templating import render
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/panel")
 def dashboard(request: Request, db: Session = Depends(get_db),
               user: User = Depends(require_user)):
     if user.role == Role.estudiante:

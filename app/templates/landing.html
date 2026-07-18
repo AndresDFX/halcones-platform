@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Halcones Paracaidismo · Escuela de paracaidismo en Cali</title>
+  <meta name="description" content="Vive la caída libre con Halcones Paracaidismo en Cali. Curso AFF, salto tándem, instructores certificados y video de cada salto. Zona de salto: Braaap Park.">
+  <link rel="icon" type="image/png" href="/static/img/favicon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#7E0704">
+  <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <style>
+    body{background:#fff}
+    .lp-nav{position:sticky;top:0;z-index:40;background:rgba(126,7,4,.97);backdrop-filter:blur(6px);
+      display:flex;align-items:center;gap:14px;padding:12px 26px;color:#fff}
+    .lp-nav img{height:38px}
+    .lp-nav .brand-txt{font-family:var(--head);font-weight:700;letter-spacing:.5px;line-height:1;font-size:1.05rem}
+    .lp-nav .brand-txt small{display:block;color:var(--gold);font-size:.6rem;letter-spacing:2px;text-transform:uppercase}
+    .lp-nav .links{margin-left:auto;display:flex;align-items:center;gap:22px}
+    .lp-nav .links a{color:#f0ddd6;font-weight:500;font-size:.92rem}
+    .lp-nav .links a:hover{color:#fff;text-decoration:none}
+    .lp-nav .btn{background:var(--gold);color:var(--maroon-dark);padding:9px 18px}
+    .lp-nav .btn:hover{filter:brightness(1.05)}
+    .lp-hero{position:relative;color:#fff;text-align:center;padding:80px 22px 90px;
+      background:linear-gradient(180deg,rgba(94,5,3,.86),rgba(22,19,15,.92)),url('/static/img/sky.svg') center/cover no-repeat,var(--maroon-dark)}
+    .lp-hero img.shield{width:140px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5));margin-bottom:14px}
+    .lp-hero .tag{color:var(--gold);text-transform:uppercase;letter-spacing:4px;font-size:.82rem;font-weight:700}
+    .lp-hero h1{color:#fff;font-size:3rem;line-height:1.05;margin:12px 0 10px;max-width:16ch;margin-left:auto;margin-right:auto}
+    .lp-hero p.lead{color:#f0d9d5;font-size:1.15rem;max-width:640px;margin:0 auto 26px}
+    .lp-hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .lp-hero .btn{padding:13px 26px;font-size:1rem}
+    .btn-wa{background:#25D366;color:#0a3d1f}
+    .btn-wa:hover{filter:brightness(1.05)}
+    .lp-section{max-width:1140px;margin:0 auto;padding:64px 22px}
+    .lp-section h2{font-size:2rem;text-align:center;margin-bottom:6px}
+    .lp-section .sub{text-align:center;color:var(--muted);max-width:620px;margin:0 auto 36px}
+    .lp-courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+    .lp-feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+    .feat{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+    .feat .ic{font-size:1.9rem}
+    .feat h3{margin:10px 0 6px;font-size:1.1rem}
+    .feat p{color:var(--muted);font-size:.92rem;margin:0}
+    .lp-loc{background:linear-gradient(135deg,var(--maroon),var(--red));color:#fff}
+    .lp-loc .wrap{max-width:1140px;margin:0 auto;padding:56px 22px;display:flex;gap:34px;align-items:center;flex-wrap:wrap}
+    .lp-loc h2{color:#fff;text-align:left;margin-top:0}
+    .lp-loc p{color:#f0d9d5;max-width:520px}
+    .lp-contact{text-align:center}
+    .contact-cards{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+    .cc{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px 26px;min-width:210px}
+    .cc .ic{font-size:1.7rem}
+    .cc a{font-weight:600}
+    .lp-footer{background:var(--ink);color:#c9bfb2;text-align:center;padding:28px 22px;font-size:.86rem}
+    .lp-footer img{height:34px;opacity:.9;margin-bottom:8px}
+    .lp-footer a{color:var(--gold)}
+    @media(max-width:640px){
+      .lp-nav .links a:not(.btn){display:none}
+      .lp-hero h1{font-size:2.1rem}
+      .lp-hero p.lead{font-size:1rem}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="lp-nav">
+  <img src="/static/img/logo-mark.png" alt="Halcones Paracaidismo">
+  <div class="brand-txt">HALCONES<small>Paracaidismo</small></div>
+  <div class="links">
+    <a href="#cursos">Cursos</a>
+    <a href="#experiencia">Experiencia</a>
+    <a href="#contacto">Contacto</a>
+    {% if user %}
+      <a href="/panel" class="btn">Ir al panel →</a>
+    {% else %}
+      <a href="/login" class="btn">Iniciar sesión</a>
+    {% endif %}
+  </div>
+</nav>
+
+<header class="lp-hero">
+  <img class="shield" src="/static/img/logo-shield.png" alt="Halcones Paracaidismo">
+  <div class="tag">Cali · Colombia</div>
+  <h1>Vive la experiencia de volar</h1>
+  <p class="lead">Escuela de paracaidismo en Cali. Salta desde 10.000 ft con instructores
+     certificados, aprende a volar en caída libre y llévate el video de cada salto.</p>
+  <div class="cta">
+    <a href="https://wa.me/573188468892?text=Hola%20Halcones,%20quiero%20informaci%C3%B3n%20de%20los%20cursos" target="_blank" rel="noopener" class="btn btn-wa">💬 Escríbenos por WhatsApp</a>
+    <a href="#cursos" class="btn gold">Ver cursos</a>
+  </div>
+</header>
+
+<!-- CURSOS -->
+<section class="lp-section" id="cursos">
+  <h2>Nuestros cursos</h2>
+  <p class="sub">Desde tu primer salto tándem hasta convertirte en paracaidista autónomo con el curso AFF.</p>
+  <div class="lp-courses">
+    {% for c in cursos %}
+    <div class="course-card">
+      <div class="cc-head" style="background:linear-gradient(135deg,{{ c.color }},var(--red))">
+        <div class="mod">{{ c.modalidad }}{% if c.destacado %} · ⭐ Popular{% endif %}</div>
+        <h3>{{ c.nombre }}</h3>
+      </div>
+      <div class="cc-body">
+        <p class="small muted">{{ c.resumen }}</p>
+        <ul class="chk-list" style="margin:10px 0">
+          {% for item in c.incluye_lista[:4] %}<li>{{ item }}</li>{% endfor %}
+        </ul>
+        <div style="margin-top:auto">
+          <div class="price">{{ c.precio | cop }}</div>
+          <div class="tiny muted">{{ c.niveles_total }} nivel(es) · salto a {{ '{:,}'.format(c.altura_salto_ft).replace(',','.') }} ft</div>
+          <a href="https://wa.me/573188468892?text=Hola,%20quiero%20info%20del%20{{ c.modalidad|urlencode }}" target="_blank" rel="noopener" class="btn btn-wa block" style="margin-top:12px">💬 Quiero información</a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p class="muted center">Pronto publicaremos nuestros cursos.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- EXPERIENCIA -->
+<section class="lp-section" id="experiencia" style="background:var(--paper);max-width:none">
+  <div style="max-width:1140px;margin:0 auto">
+    <h2>¿Por qué Halcones?</h2>
+    <p class="sub">Formación seria, segura y con la mejor energía para que vivas el cielo.</p>
+    <div class="lp-feats">
+      <div class="feat"><div class="ic">🪂</div><h3>Instructores certificados</h3><p>Acompañamiento profesional en cada salto y en tierra.</p></div>
+      <div class="feat"><div class="ic">🎥</div><h3>Video de cada salto</h3><p>El instructor graba tu salto para analizarlo y para que lo revivas.</p></div>
+      <div class="feat"><div class="ic">🎈</div><h3>Salto desde 10.000 ft</h3><p>~30 segundos de caída libre por salto durante el aprendizaje.</p></div>
+      <div class="feat"><div class="ic">🧰</div><h3>Equipo completo</h3><p>Paracaídas, overol, altímetro, casco, gafas y radio incluidos.</p></div>
+      <div class="feat"><div class="ic">📈</div><h3>Progresión de 7 niveles</h3><p>Con el curso AFF logras autonomía de vuelo y control del cuerpo.</p></div>
+      <div class="feat"><div class="ic">📓</div><h3>Bitácora y seguimiento</h3><p>Registramos tu avance salto a salto en la plataforma.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- UBICACIÓN -->
+<section class="lp-loc">
+  <div class="wrap">
+    <div style="flex:1;min-width:260px">
+      <h2>📍 Zona de salto</h2>
+      <p><b>Braaap Park</b> · vía Rozo–Cali. A solo 15 minutos del aeropuerto Alfonso Bonilla
+        Aragón de Cali. Un centro de experiencias deportivas ideal para volar.</p>
+    </div>
+    <a href="https://www.google.com/maps/search/Braaap+Park+Rozo+Cali" target="_blank" rel="noopener" class="btn gold">Ver en el mapa</a>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="lp-section lp-contact" id="contacto">
+  <h2>Contáctanos</h2>
+  <p class="sub">¿Listo para saltar? Escríbenos y coordinamos tu experiencia.</p>
+  <div class="contact-cards">
+    <div class="cc"><div class="ic">💬</div><div class="small muted">WhatsApp</div>
+      <a href="https://wa.me/573188468892" target="_blank" rel="noopener">+57 318 846 8892</a></div>
+    <div class="cc"><div class="ic">✉️</div><div class="small muted">Correo</div>
+      <a href="mailto:halconesparacaidismo@gmail.com">halconesparacaidismo@gmail.com</a></div>
+    <div class="cc"><div class="ic">📸</div><div class="small muted">Instagram</div>
+      <a href="https://instagram.com/halconescali_paracaidismo" target="_blank" rel="noopener">@halconescali_paracaidismo</a></div>
+  </div>
+  <div style="margin-top:30px">
+    <a href="https://wa.me/573188468892?text=Hola%20Halcones,%20quiero%20reservar" target="_blank" rel="noopener" class="btn btn-wa" style="padding:13px 28px">💬 Reserva por WhatsApp</a>
+  </div>
+</section>
+
+<footer class="lp-footer">
+  <img src="/static/img/wordmark-light.png" alt="Halcones Paracaidismo"><br>
+  Halcones Paracaidismo · Cali, Colombia · Braaap Park (vía Rozo–Cali)<br>
+  <span style="opacity:.7">Plataforma de gestión —</span> <a href="/login">Iniciar sesión</a>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

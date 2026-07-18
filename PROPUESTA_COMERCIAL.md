@@ -31,19 +31,59 @@ AFF**, y está diseñada precisamente para ayudar a **vender más cursos y no pe
 
 ---
 
-## 2. Qué incluye la plataforma (ya construida y funcionando)
+## 2. Funcionalidades de la plataforma (ya construidas y funcionando)
 
-| Módulo | Descripción |
-|---|---|
-| **Gestión de cursos** | Catálogo informativo (AFF de 7 niveles, Tándem…), temario, precios, requisitos y **videos + manuales** (subir archivo o enlazar YouTube). |
-| **Seguimiento de estudiantes** | Fichas completas (cédula, peso, EPS, contacto de emergencia), inscripciones y **bitácora de saltos** por nivel. |
-| **Finanzas** | Pagos (reserva/abono/saldo), cartera por cobrar, ingresos por método y por mes, **nómina de instructores**. |
-| **Programación de saltos (manifiesto)** | Jornadas, vuelos por avión y asignación de **quién va en cada vuelo** (alumno/instructor/tándem/cámara). |
-| **Notificaciones por correo** | **Programables desde el panel del administrador**: recordatorio de próximo salto y oferta de curso a quienes saltaron una sola vez. |
-| **Roles y seguridad** | Administrador, Instructor y Estudiante, cada uno con su propia vista y permisos. Sin registro público (el admin crea las cuentas). |
-| **Portal del estudiante** | El alumno ve su curso, videos, manual, avance, pagos y próximos saltos. |
-| **App instalable (PWA)** | Se instala en el celular/PC como una app, con ícono de marca y uso básico sin conexión. |
-| **Identidad de marca** | Logo, colores (vino/rojo/negro) y estilo de Halcones en toda la interfaz. |
+### 🌐 Página web comercial (pública)
+- Página de inicio atractiva que presenta la escuela a nuevos clientes.
+- Muestra los cursos disponibles con precios e información, tomados de la plataforma.
+- Botones directos de **WhatsApp** para reservar/consultar y de **Iniciar sesión**.
+- Sección de experiencia, zona de salto y datos de contacto.
+
+### 🪂 Gestión de cursos
+- Catálogo de cursos (AFF de 7 niveles, Tándem y los que se agreguen).
+- Temario por niveles, precio, reserva mínima, requisitos y "qué incluye".
+- **Contenido multimedia por curso**: cargar el **manual en PDF**, subir videos o
+  enlazar videos de **YouTube** (se ven dentro de la plataforma).
+- Crear y editar cursos y su contenido desde el panel.
+
+### 🎓 Seguimiento de estudiantes
+- Ficha completa: datos personales, cédula, peso, EPS, dirección y **contacto de emergencia**.
+- Inscripción de estudiantes a uno o varios cursos, con instructor asignado.
+- **Bitácora de saltos**: estado y avance nivel por nivel (aprobado / en progreso / pendiente),
+  con fecha, altura, nota del instructor y enlace al video de cada salto.
+- Barra de avance del curso por estudiante.
+
+### 💳 Finanzas
+- Registro de **pagos de estudiantes** (reserva, abono, saldo) por transferencia, consignación,
+  efectivo o link de pago.
+- **Cartera por cobrar**: saldos pendientes por estudiante y foco de cobranza.
+- Panel con **ingresos** totales, por método de pago y por mes.
+- **Nómina de instructores**: pagos a instructores por salto, salario o bono (separado de las
+  finanzas de estudiantes).
+
+### 📋 Programación de saltos (manifiesto)
+- Jornadas de salto por día, con zona y estado.
+- **Vuelos por avión** (loads), con hora, altura y estado.
+- Asignación de **quién va en cada vuelo** (alumno, instructor, tándem, cámara) y control de cupos.
+- Gestión de la **flota de aviones** (matrícula, modelo, capacidad).
+
+### ✉️ Notificaciones por correo (programables por el administrador)
+- **Recordatorio del próximo salto** a los estudiantes (N días antes).
+- **Oferta de curso** a quienes saltaron una sola vez, para reactivarlos.
+- Plantillas de correo editables con variables (nombre, fecha, curso…), previsualización de
+  destinatarios y bitácora de envíos. Configuración de correo (SMTP) desde el mismo panel.
+
+### 👥 Roles, seguridad y portal
+- Tres roles: **Administrador**, **Instructor** y **Estudiante**, cada uno con su vista.
+- El instructor ve su operación (estudiantes, bitácora, manifiesto) y **sus propios pagos**,
+  sin ver las finanzas del negocio.
+- **Sin registro público**: el administrador crea las cuentas y entrega las credenciales.
+- **Portal del estudiante**: ve su curso, videos, manual, avance, pagos y próximos saltos.
+
+### 📱 App instalable (PWA) e identidad de marca
+- Se instala en el celular o el computador como una app, con ícono de Halcones.
+- Diseño con el **logo y los colores oficiales** (vino, rojo, negro) en toda la interfaz.
+- Publicada en internet con **URL propia y HTTPS** (candado de seguridad).
 
 ---
 
@@ -199,6 +239,15 @@ Guía técnica completa en `DEPLOY_RENDER.md`.
 3. Desarrollo, pruebas, ajustes y entrega final (2 semanas).
 4. Registro de dominio y cuentas de hosting/correo a nombre de Halcones.
 5. (Opcional) Activación del plan de soporte mensual.
+
+---
+
+## 10. Contacto
+
+**Julián Castaño**
+📱 WhatsApp: **+57 318 846 8892**
+
+Con gusto resuelvo cualquier duda y coordinamos la reunión inicial.
 
 ---
 
