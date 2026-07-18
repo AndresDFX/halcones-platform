@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Base de datos local / archivos subidos
+*.db
+halcones.db
+uploads/
+
+# Entorno
+.env
+
+# SO / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
